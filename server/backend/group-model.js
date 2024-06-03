@@ -1,7 +1,7 @@
 module.exports = {
     Group1: {
         GroupId: "5g0zswb",
-        Name: "Group 1",
+        GroupName: "Group 1",
         Members: ["Anna", "Stefi", "Aida", "Tobias"],
         Transactions: [
             {
@@ -30,7 +30,7 @@ module.exports = {
     },
     Group2: {
         GroupId: "m8df0xi",
-        Name: "Group 2",
+        GroupName: "Group 2",
         Members: ["Anna", "Stefi", "Aida", "Tobias"],
         Transactions: [
             {
