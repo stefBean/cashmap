@@ -8,17 +8,14 @@ const groupModel = require("../group-model");
 
 // Get all groups for a user
 router.get('/', function (req, res) {
-    const username = req.params.username;
-    const userGroups = Object.values(groupModel).filter(group =>
-        group.Members.includes(username)
-    );
-
-    if (userGroups.length) {
-        res.send(userGroups);
-    } else {
-        res.sendStatus(404);
+    const userGroups = {};
+    for (const groupName in groupModel) {
+        if (groupModel[groupName].Members.includes(req.user.username)) {
+            userGroups[groupName] = groupModel[groupName];
+        }
     }
-});
+    res.json(userGroups);
+})
 
 /*
 router.get('/:groupId', function (req, res) {
