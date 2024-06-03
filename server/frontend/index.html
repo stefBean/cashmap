@@ -1,35 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>CashMap</title>
-    <link rel="stylesheet" href="index.css"/>
-    <script type="module" src="index.js"></script>
+    <meta charset="UTF-8">
+    <title>Cashmap</title>
+    <script src="index.js" defer></script>
 </head>
-
-<body class="body">
-
-<header>
-    <h1>Cashmap</h1>
-</header>
-
-<nav>
-    <h2>Groups</h2>
-    <ul></ul>
-</nav>
-
-<main class>
-</main>
-
-<footer>
-    <ul>
-        <li>© CashMap</li>
-        <li>―</li>
-        <li>Go visit <a href="https://www.fh-campuswien.ac.at/" target="_blank">fh-campuswien.ac.at</a>!</li>
-    </ul>
-</footer>
-
+<body>
+<div class="log-form">
+    <h2>Login to your account</h2>
+    <form onsubmit="return false;">
+        <input type="text" id="username" title="username" placeholder="username" />
+        <input type="password" id="password" title="password" placeholder="password" />
+        <button type="submit" id="login-btn" class="btn" onclick="login(event)">Login</button>
+        <button type="submit" id="new-user-btn" class="btn" onclick="registerNewUser(event)">New User</button>
+        <!--a class="forgot" href="#">Forgot Username?</a-->
+    </form>
+</div><!--end log form -->
 </body>
-
 </html>
