@@ -3,6 +3,8 @@ const groupModel = require("../group-model")
 const express = require("express");
 const router = express.Router();
 
+
+//edit transaction
 router.put('/groups/:groupId/transactions/:transactionId', function (req, res) {
 
     const groupId = req.params.groupId
@@ -37,15 +39,6 @@ router.get('/:groupId/transactions', function (req, res) {
         res.status(404).send({message: 'Group not found'});
     }
 })
-
-function generateTransactionId() {
-    let transactionId;
-    do {
-        transactionId = Math.random().toString(36).substring(2, 15);
-    } while (Object.values(groupModel).some(group =>
-        group.Transactions.some(tx => tx.TransactionId === transactionId)));
-    return transactionId;
-}
 
 //new transaction
 router.post('/:groupId/transactions', function (req, res) {
@@ -87,7 +80,15 @@ router.delete('/:groupId/transactions/:transactionId', function (req, res) {
     } else {
         res.status(404).send({message: 'Group not found'});
     }
-
 })
+
+function generateTransactionId() {
+    let transactionId;
+    do {
+        transactionId = Math.random().toString(36).substring(2, 15);
+    } while (Object.values(groupModel).some(group =>
+        group.Transactions.some(tx => tx.TransactionId === transactionId)));
+    return transactionId;
+}
 
 module.exports = router;

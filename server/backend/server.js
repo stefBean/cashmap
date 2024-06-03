@@ -13,21 +13,13 @@ const transactionRoutes = require('./routes/transactionRoutes');
 
 app.use(bodyParser.json());
 
-app.get('/',function (req, res) {
-res.status(100).json("Hello World");
-
-})
-
-// Define login and registration routes first (these should be excluded from the token check)
 app.use('/users/', userRoutes);
 
-
-
-// Apply the authenticateToken middleware globally to all routes below this line
+// Apply the authenticateToken middleware to routes below
 app.use(authenticateToken);
 
-app.use('/groups', groupRoutes);
-//app.use('/api/transactions', transactionRoutes);
+app.use('/groups/', groupRoutes);
+//app.use('/transactions/', transactionRoutes);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, './frontend')));
