@@ -7,7 +7,7 @@ const router = express.Router();
 const groupModel = require("../group-model");
 
 // Get all groups for a user
-router.get('/:username/groups', function (req, res) {
+router.get('/', function (req, res) {
     const username = req.params.username;
     const userGroups = Object.values(groupModel).filter(group =>
         group.Members.includes(username)

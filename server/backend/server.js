@@ -19,14 +19,14 @@ res.status(100).json("Hello World");
 })
 
 // Define login and registration routes first (these should be excluded from the token check)
-//app.use('/api/users/register', userRoutes);
-//app.use('/api/users/login', userRoutes);
+app.use('/users/', userRoutes);
+
 
 
 // Apply the authenticateToken middleware globally to all routes below this line
-//app.use(authenticateToken);
+app.use(authenticateToken);
 
-//app.use('/api/groups', groupRoutes);
+app.use('/groups', groupRoutes);
 //app.use('/api/transactions', transactionRoutes);
 
 // Serve static files
