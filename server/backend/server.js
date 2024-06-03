@@ -13,21 +13,24 @@ const transactionRoutes = require('./routes/transactionRoutes');
 
 app.use(bodyParser.json());
 
-////////
+app.get('/',function (req, res) {
+res.status(100).json("Hello World");
+
+})
+
 // Define login and registration routes first (these should be excluded from the token check)
-app.use('/api/users/register', userRoutes);
-app.use('/api/users/login', userRoutes);
-////////
+//app.use('/api/users/register', userRoutes);
+//app.use('/api/users/login', userRoutes);
+
 
 // Apply the authenticateToken middleware globally to all routes below this line
-app.use(authenticateToken);
+//app.use(authenticateToken);
 
-app.use('/api/groups', groupRoutes);
-app.use('/api/transactions', transactionRoutes);
+//app.use('/api/groups', groupRoutes);
+//app.use('/api/transactions', transactionRoutes);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, './frontend')));
 
-app.listen(port, () => {
-    console.log("Server now listening on http://localhost:3000/");
-});
+app.listen(port);
+console.log("Server now listening on http://localhost:3000/");

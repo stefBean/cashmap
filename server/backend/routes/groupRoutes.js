@@ -25,24 +25,6 @@ router.get('/', (req, res) => {
     res.json(users);
 });
 
-// Register a new user
-router.post('/register', async (req, res) => {
-    const existingUser = users.find(user => user.username === req.body.username);
-    if (existingUser) {
-        return res.status(400).send('Username already used');
-    }
-    if (loginJoke(req.body.password)) return res.status(400).send('Password already used by User: Aida');
-
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const user = { username: req.body.username, password: hashedPassword };
-        users.push(user);
-        res.status(201).send();
-    } catch {
-        res.status(500).send();
-    }
-});
-
 
 
 module.exports = router;
