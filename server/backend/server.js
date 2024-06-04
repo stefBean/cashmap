@@ -13,16 +13,18 @@ const transactionRoutes = require('./routes/transactionRoutes');
 
 app.use(bodyParser.json());
 
+// Serve static files
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 app.use('/users/', userRoutes);
 
 // Apply the authenticateToken middleware to routes below
 app.use(authenticateToken);
 
 app.use('/groups/', groupRoutes);
-//app.use('/transactions/', transactionRoutes);
+app.use('/transactions/', transactionRoutes);
 
-// Serve static files
-app.use(express.static(path.join(__dirname, './frontend')));
+
 
 app.listen(port);
 console.log("Server now listening on http://localhost:3000/");

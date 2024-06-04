@@ -85,18 +85,6 @@ img {
     border-radius: 12px;
 }
 
-article {
-    background-color: lightgray;
-    border-radius: 16px;
-    padding: 16px;
-    width: 384px;
-    margin: 8px;
-}
-
-a {
-    color: beige;
-}
-
 span {
     margin-right: 4px;
 }

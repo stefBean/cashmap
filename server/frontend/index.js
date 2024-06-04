@@ -53,7 +53,7 @@ function registerNewUser(event) {
         }
     };
 
-    xhr.open("POST", "/users");
+    xhr.open("POST", "/users/register");
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.send(JSON.stringify(userData));
 }

@@ -17,7 +17,7 @@ router.get('/', function (req, res) {
     res.json(userGroups);
 })
 
-/*
+
 router.get('/:groupId', function (req, res) {
     const id = req.params.groupId
     const group = Object.values(groupModel).find(group => group.GroupId === id);
@@ -84,5 +84,5 @@ function generateGroupId() {
     } while (groupId in groupModel);
     return groupId;
 }
-*/
+
 module.exports = router;
