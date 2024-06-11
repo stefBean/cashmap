@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const authenticateToken = require('./authenticateToken');
 
 const app = express();
+
+
 const port = 3000;
 
 const userRoutes = require('./routes/userRoutes');
@@ -16,15 +18,22 @@ app.use(bodyParser.json());
 // Serve static files
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-app.use('/users/', userRoutes);
+app.use('/users', userRoutes);
 
 // Apply the authenticateToken middleware to routes below
 app.use(authenticateToken);
 
-app.use('/groups/', groupRoutes);
-app.use('/transactions/', transactionRoutes);
+app.use('/groups', groupRoutes);
+app.use('/transactions', transactionRoutes);
 
 
 
 app.listen(port);
 console.log("Server now listening on http://localhost:3000/");
+
+
+const app2 = express();
+app2.use(bodyParser.json());
+app2.use(express.static(path.join(__dirname, '../frontend')));
+app2.listen(4000);
+console.log("Server now listening on http://localhost:4000/");
