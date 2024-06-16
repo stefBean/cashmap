@@ -1,12 +1,39 @@
-//edit transaction
 const groupModel = require("../group-model")
 const express = require("express");
 const router = express.Router();
 
-
-//edit transaction
+/**
+ * @swagger
+ * /groups/{groupId}/transactions/{transactionId}:
+ *   put:
+ *     summary: Edit a transaction
+ *     tags: [Transactions]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *       - in: path
+ *         name: transactionId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the transaction
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       200:
+ *         description: Transaction updated successfully
+ *       404:
+ *         description: Group or transaction not found
+ */
 router.put('/groups/:groupId/transactions/:transactionId', function (req, res) {
-
     const groupId = req.params.groupId
     const transactionId = req.params.transactionId
     const transaction = req.body;
@@ -25,12 +52,34 @@ router.put('/groups/:groupId/transactions/:transactionId', function (req, res) {
     } else {
         res.status(404).send({message: 'Transaction not found'});
     }
-
 })
 
-//get all transactions in a group
+/**
+ * @swagger
+ * /groups/{groupId}/transactions:
+ *   get:
+ *     summary: Get all transactions in a group
+ *     tags: [Transactions]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     responses:
+ *       200:
+ *         description: A list of transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       404:
+ *         description: Group not found
+ */
 router.get('/:groupId/transactions', function (req, res) {
-
     const groupId = req.params.groupId
     if (groupId in groupModel) {
         const transactionsInThisGroup = groupModel[groupId].Transactions;
@@ -40,15 +89,38 @@ router.get('/:groupId/transactions', function (req, res) {
     }
 })
 
-//new transaction
+/**
+ * @swagger
+ * /groups/{groupId}/transactions:
+ *   post:
+ *     summary: Add a new transaction
+ *     tags: [Transactions]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *     responses:
+ *       201:
+ *         description: Transaction added successfully
+ *       404:
+ *         description: Group not found
+ */
 router.post('/:groupId/transactions', function (req, res) {
-
     const newTransaction = req.body
     const thisGroup = req.params.groupId
     newTransaction.TransactionId = generateTransactionId();
 
-    if (groupId in groupModel) {
-        groupModel[groupId].Transactions.push(newTransaction);
+    if (thisGroup in groupModel) {
+        groupModel[thisGroup].Transactions.push(newTransaction);
 
         res.status(201).send({
             message: 'Transaction added successfully',
@@ -59,9 +131,32 @@ router.post('/:groupId/transactions', function (req, res) {
     }
 })
 
-//delete transaction
+/**
+ * @swagger
+ * /groups/{groupId}/transactions/{transactionId}:
+ *   delete:
+ *     summary: Delete a transaction
+ *     tags: [Transactions]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *       - in: path
+ *         name: transactionId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the transaction
+ *     responses:
+ *       200:
+ *         description: Transaction deleted successfully
+ *       404:
+ *         description: Group or transaction not found
+ */
 router.delete('/:groupId/transactions/:transactionId', function (req, res) {
-
     const groupId = req.params.groupId
     const transactionId = req.params.transactionId
 

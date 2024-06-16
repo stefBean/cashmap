@@ -6,7 +6,20 @@ const express = require("express");
 const router = express.Router();
 const groupModel = require("../group-model");
 
-// Get all groups for a user
+/**
+ * @swagger
+ * /groups:
+ *   get:
+ *     summary: Get all groups for a user
+ *     tags: [Groups]
+ *     responses:
+ *       200:
+ *         description: A list of user groups
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ */
 router.get('/', function (req, res) {
     const userGroups = {};
     for (const groupName in groupModel) {
@@ -15,21 +28,65 @@ router.get('/', function (req, res) {
         }
     }
     res.json(userGroups);
-})
+});
 
-
+/**
+ * @swagger
+ * /groups/{groupId}:
+ *   get:
+ *     summary: Get a group by ID
+ *     tags: [Groups]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     responses:
+ *       200:
+ *         description: A single group
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Group not found
+ */
 router.get('/:groupId', function (req, res) {
-    const id = req.params.groupId
+    const id = req.params.groupId;
     const group = Object.values(groupModel).find(group => group.GroupId === id);
 
     if (group) {
         res.send(group);
     } else {
-        res.sendStatus(404)
+        res.sendStatus(404);
     }
 });
 
-//create new group
+/**
+ * @swagger
+ * /groups:
+ *   post:
+ *     summary: Create a new group
+ *     tags: [Groups]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               members:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       201:
+ *         description: Group created successfully
+ */
 router.post('/', function (req, res) {
     const newGroup = {
         GroupId: generateGroupId(),
@@ -37,12 +94,43 @@ router.post('/', function (req, res) {
         Members: req.body.members,
         Transactions: []
     };
-    groupModel[newGroup.GroupId]= newGroup;
+    groupModel[newGroup.GroupId] = newGroup;
 
-    res.status(201).send({newGroup});
+    res.status(201).send({ newGroup });
 });
 
-//change group details, like name or members ??
+/**
+ * @swagger
+ * /groups/{groupId}:
+ *   put:
+ *     summary: Update group details
+ *     tags: [Groups]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               members:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Group updated successfully
+ *       404:
+ *         description: Group not found
+ */
 router.put('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
     const group = groupModel[groupId];
@@ -60,7 +148,26 @@ router.put('/:groupId', function (req, res) {
     });
 });
 
-router.delete('/groups/:groupId', function (req, res) {
+/**
+ * @swagger
+ * /groups/{groupId}:
+ *   delete:
+ *     summary: Delete a group
+ *     tags: [Groups]
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     responses:
+ *       200:
+ *         description: Group deleted successfully
+ *       404:
+ *         description: Group not found
+ */
+router.delete('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
 
     if (groupId in groupModel) {
@@ -74,8 +181,7 @@ router.delete('/groups/:groupId', function (req, res) {
     } else {
         res.status(404).send({ message: 'Group not found' });
     }
-
-})
+});
 
 function generateGroupId() {
     let groupId;

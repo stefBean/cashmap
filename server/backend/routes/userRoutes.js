@@ -6,12 +6,84 @@ const express = require("express");
 const router = express.Router();
 const groupModel = require("../group-model");
 
-// Get all users
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The user's username
+ *         password:
+ *           type: string
+ *           description: The user's password
+ *       example:
+ *         username: johndoe
+ *         password: password123
+ */
+
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: The user managing API
+ */
+
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Retrieve a list of users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
 router.get('/', (req, res) => {
     res.json(users);
 });
 
-// Register a new user
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The user's username
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *             example:
+ *               username: johndoe
+ *               password: password123
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *       400:
+ *         description: Username already used or invalid password
+ *       500:
+ *         description: Error creating user
+ */
 router.post('/register', async (req, res) => {
     const existingUser = users.find(user => user.username === req.body.username);
     if (existingUser) {
@@ -29,7 +101,46 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login a user
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 description: The user's username
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *             example:
+ *               username: johndoe
+ *               password: password123
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   description: JWT token
+ *       400:
+ *         description: Cannot find user
+ *       401:
+ *         description: Not allowed
+ *       500:
+ *         description: Error logging in
+ */
 router.post('/login', async (req, res) => {
     const user = users.find(user => user.username === req.body.username);
     if (user == null) {
