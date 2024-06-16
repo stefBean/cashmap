@@ -9,9 +9,12 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const app = express();
 const port = 3000;
 
+//All routes
+
 const userRoutes = require('./routes/userRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const currencyRoutes = require('./routes/currencyRoutes');
 
 app.use(bodyParser.json());
 
@@ -35,7 +38,6 @@ const options = {
            'server/backend/routes/groupRoutes.js',
            'server/backend/routes/transactionRoutes.js'],
 };
-
 const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -49,6 +51,7 @@ app.use(authenticateToken);
 
 app.use('/groups', groupRoutes);
 app.use('/transactions', transactionRoutes);
+app.use('/currency', currencyRoutes);
 
 app.listen(port, () => {
     console.log(`Server now listening on http://localhost:${port}/`);
