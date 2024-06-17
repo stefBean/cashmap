@@ -1242,3 +1242,11 @@
 /node_modules/z-schema/dist/ZSchema-browser-min.js
 /node_modules/z-schema/dist/ZSchema-browser-min.js.map
 /node_modules/z-schema/dist/ZSchema-browser-test.js
+/node_modules/.bin/conc.cmd
+/node_modules/.bin/conc.ps1
+/node_modules/.bin/concurrently.cmd
+/node_modules/.bin/concurrently.ps1
+/node_modules/.bin/loose-envify.cmd
+/node_modules/.bin/loose-envify.ps1
+/node_modules/.bin/tree-kill.cmd
+/node_modules/.bin/tree-kill.ps1

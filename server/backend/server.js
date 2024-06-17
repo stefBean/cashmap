@@ -4,7 +4,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const authenticateToken = require('./authenticateToken');
 const swaggerUi = require('swagger-ui-express');
-const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerJsdoc = require('swagger-jsdoc')
 
 const app = express();
 const port = 3000;
@@ -42,9 +42,11 @@ const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, '../reactfront/build')));
+
 
 app.use('/users', userRoutes);
+
 
 // Apply the authenticateToken middleware to routes below
 app.use(authenticateToken);
@@ -52,6 +54,11 @@ app.use(authenticateToken);
 app.use('/groups', groupRoutes);
 app.use('/transactions', transactionRoutes);
 app.use('/currency', currencyRoutes);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../reactfront/build', 'index.html'));
+});
+
 
 app.listen(port, () => {
     console.log(`Server now listening on http://localhost:${port}/`);
