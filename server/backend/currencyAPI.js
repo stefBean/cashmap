@@ -9,7 +9,7 @@ function loadCache() {
     if (fs.existsSync(CACHE_FILE)) {
         return JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
     }
-    return { data: null, lastFetched: 0 };
+    return {data: null, lastFetched: 0};
 }
 
 // Save cache
@@ -46,29 +46,45 @@ async function fetchCurrencyData() {
             console.log('Using stale cached data due to error');
             return cache.data;
         }
-        throw error; // Re-throw error if no cached data is available
-    }
-}
-
-async function convertEURto(currencyType, amount) {
-    try {
-        const data = await fetchCurrencyData();
-        if (data && data.data && data.data[currencyType]) {
-            const rate = data.data[currencyType].value;
-            return amount * rate;
-        } else {
-            throw new Error("Invalid currency type or data not found.");
-        }
-    } catch (error) {
-        console.error("Error fetching exchange rate:", error);
         throw error;
     }
 }
 
-module.exports = convertEURto;
+async function convert(currencyIn, currencyOut, amount) {
+    try {
+        const data = await fetchCurrencyData();
+        if (data && data.data) {
+
+            if (!data.data[currencyOut]) {
+                throw new Error("Invalid currency code: " + currencyOut);
+            }
+            const targetRate = data.data[currencyOut].value;
+
+
+            if (currencyIn === "EUR") {
+                return amount * targetRate;
+            }
+            else {
+                if (!data.data[currencyIn]) {
+                    throw new Error("Invalid currency code: " + currencyIn);
+                }
+                const eurRate = 1 / data.data[currencyIn].value;
+                const eurAmount = amount * eurRate;
+                return eurAmount * targetRate; // Use reciprocal for EUR to target conversion
+            }
+        } else {
+            throw new Error("Error fetching exchange rate data.");
+        }
+    } catch (error) {
+        console.error("Error converting currency:", error);
+        throw error;
+    }
+}
+
+module.exports = convert;
 
 // Test
-convertEURto('USD', 100).then(convertedAmount => {
+convert('EUR', 'EUR', 9.310500980740242).then(convertedAmount => {
     console.log(`Converted Amount: ${convertedAmount}`);
 }).catch(error => {
     console.error(error);

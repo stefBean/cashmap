@@ -1,5 +1,5 @@
 const express = require('express');
-const convertEURto = require('../currencyAPI');
+const convert = require('../currencyAPI');
 const router = express.Router();
 
 /**
@@ -37,14 +37,14 @@ const router = express.Router();
  *         description: Error converting currency
  */
 router.get('/convert', async (req, res) => {
-    const { currencyType, amount } = req.query;
+    const { currencyIn, currencyOut, amount } = req.query;
 
-    if (!currencyType || isNaN(amount)) {
+    if (!currencyIn || !currencyOut || isNaN(amount)) {
         return res.status(400).send('Missing or invalid query parameters');
     }
 
     try {
-        const convertedAmount = await convertEURto(currencyType, parseFloat(amount));
+        const convertedAmount = await convert(currencyType, parseFloat(amount));
         res.json({ convertedAmount });
     } catch (error) {
         res.status(500).send('Error converting currency');

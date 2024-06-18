@@ -36,7 +36,8 @@ const options = {
     swaggerDefinition,
     apis: ['server/backend/routes/userRoutes.js',
            'server/backend/routes/groupRoutes.js',
-           'server/backend/routes/transactionRoutes.js'],
+           'server/backend/routes/transactionRoutes.js',
+           'server/backend/routes/currencyRoutes.js'],
 };
 const swaggerSpec = swaggerJsdoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
