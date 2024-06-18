@@ -7,9 +7,16 @@ const router = express.Router();
  * /currency/convert:
  *   get:
  *     summary: Convert EUR to specified currency
+ *     tags: [CurrencyAPI]
  *     parameters:
+ *
  *       - in: query
- *         name: currencyType
+ *         name: currencyIn
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: currencyOut
  *         required: true
  *         schema:
  *           type: string
@@ -44,7 +51,7 @@ router.get('/convert', async (req, res) => {
     }
 
     try {
-        const convertedAmount = await convert(currencyType, parseFloat(amount));
+        const convertedAmount = await convert(currencyIn,currencyOut, parseFloat(amount));
         res.json({ convertedAmount });
     } catch (error) {
         res.status(500).send('Error converting currency');

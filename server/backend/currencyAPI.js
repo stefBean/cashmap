@@ -84,7 +84,7 @@ async function convert(currencyIn, currencyOut, amount) {
 module.exports = convert;
 
 // Test
-convert('EUR', 'EUR', 9.310500980740242).then(convertedAmount => {
+convert('USD', 'EUR', 10).then(convertedAmount => {
     console.log(`Converted Amount: ${convertedAmount}`);
 }).catch(error => {
     console.error(error);
