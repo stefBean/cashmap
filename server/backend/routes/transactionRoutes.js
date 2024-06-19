@@ -8,6 +8,8 @@ const router = express.Router();
  *   put:
  *     summary: Edit a transaction
  *     tags: [Transactions]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -60,6 +62,8 @@ router.put('/groups/:groupId/transactions/:transactionId', function (req, res) {
  *   get:
  *     summary: Get all transactions in a group
  *     tags: [Transactions]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -95,6 +99,8 @@ router.get('/:groupId/transactions', function (req, res) {
  *   post:
  *     summary: Add a new transaction
  *     tags: [Transactions]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -137,6 +143,8 @@ router.post('/:groupId/transactions', function (req, res) {
  *   delete:
  *     summary: Delete a transaction
  *     tags: [Transactions]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
