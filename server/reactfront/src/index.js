@@ -4,6 +4,16 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css'; 
 import App from './App'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
+<<<<<<< HEAD
+=======
+import { setAuthToken } from './authAxios';
+
+// Check in localStorage
+const token = localStorage.getItem('accessToken');
+if (token) {
+    setAuthToken(token);
+}
+>>>>>>> origin/Tobias-react
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
