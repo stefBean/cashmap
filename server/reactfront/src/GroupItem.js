@@ -41,15 +41,16 @@ const GroupItem = () => {
     };
 
     const fetchJoke = () => {
-        fetch('https://api.yomomma.info/')
+        fetch('https://api.allorigins.win/get?url=https://www.yomama-jokes.com/api/v1/jokes/random/')
             .then(response => response.json())
             .then(data => {
-                setJoke(data.joke);
+                const parsedData = JSON.parse(data.contents);
+                setJoke(parsedData.joke);
             })
             .catch(error => {
                 console.error('Error fetching joke:', error);
             });
-    };
+    };      
 
     return (
         <Container fluid className="groups-container">
