@@ -11,3 +11,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Groups.js */
+.groups-container {
+  padding-top: 20px;
+}
+
+.left-sidebar {
+  border-right: 1px solid #ccc;
+}
+
+.main-content {
+  border-right: 1px solid #ccc;
+}
+
+.right-sidebar {
+  padding-top: 20px;
+}
+
+.recent-expenses {
+  margin-top: 20px;
+}
+

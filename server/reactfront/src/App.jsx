@@ -6,7 +6,8 @@ import Home from './Home';
 import Groups from './Groups';
 import CurrencyConverter from './CurrencyConverter';
 import Login from './Login';
-import authAxios, { setAuthToken } from './authAxios';
+import { setAuthToken } from './authAxios';
+
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
       </Routes>
     </div>
   );
+
 }
 
 export default App;
