@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const authenticateToken = require('./authenticateToken');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc')
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = 3000;
@@ -17,6 +18,7 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const currencyRoutes = require('./routes/currencyRoutes');
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 const swaggerDefinition = {
     openapi: '3.0.0',
