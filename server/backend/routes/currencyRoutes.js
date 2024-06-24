@@ -8,6 +8,8 @@ const router = express.Router();
  *   get:
  *     summary: Convert EUR to specified currency
  *     tags: [CurrencyAPI]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *
  *       - in: query

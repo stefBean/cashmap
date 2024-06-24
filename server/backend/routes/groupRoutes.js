@@ -12,6 +12,8 @@ const groupModel = require("../group-model");
  *   get:
  *     summary: Get all groups for a user
  *     tags: [Groups]
+ *     security:
+ *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of user groups
@@ -36,6 +38,8 @@ router.get('/', function (req, res) {
  *   get:
  *     summary: Get a group by ID
  *     tags: [Groups]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -70,6 +74,8 @@ router.get('/:groupId', function (req, res) {
  *   post:
  *     summary: Create a new group
  *     tags: [Groups]
+ *     security:
+ *      - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -105,6 +111,8 @@ router.post('/', function (req, res) {
  *   put:
  *     summary: Update group details
  *     tags: [Groups]
+ *     security:
+ *        - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
@@ -154,6 +162,8 @@ router.put('/:groupId', function (req, res) {
  *   delete:
  *     summary: Delete a group
  *     tags: [Groups]
+ *     security:
+ *      - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: groupId
