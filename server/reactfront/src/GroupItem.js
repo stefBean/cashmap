@@ -2,6 +2,14 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap';
 import './index.css'; // Custom CSS for styling
+import {Header} from './components/Header'
+import{Balance} from './components/Balance'
+import {IncomeExpenses} from './components/IncomeExpenses'
+import {TransactionList} from './components/TransactionList'
+import{AddTransaction} from './components/AddTransaction'
+import{GlobalProvider} from './context/GlobalState'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './context/ExpenseTracker.css';
 
 
 const GroupItem = () => {
@@ -57,29 +65,15 @@ const GroupItem = () => {
             
             <Row>
                 <Col xs={12} md={6} className="left-sidebar">
-                    <h3>Tracker</h3>
-                    <Form onSubmit={(e) => { e.preventDefault(); addExpense(); }}>
-                        <Form.Group>
-                            <Form.Label>Add New Expense</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter expense description"
-                                value={newExpense}
-                                onChange={(e) => setNewExpense(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Button variant="primary" type="submit">
-                            Add Expense
-                        </Button>
-                    </Form>
-                    <div className="recent-expenses">
-                        <h4>Recent Expenses</h4>
-                        <ListGroup>
-                            {lastExpenses.map((expense, index) => (
-                                <ListGroup.Item key={index}>{expense}</ListGroup.Item>
-                            ))}
-                        </ListGroup>
+                    <GlobalProvider>
+                    <Header/>
+                    <div className="container">
+                    <Balance/>
+                    <IncomeExpenses/>
+                    <TransactionList/>
+                    <AddTransaction/>
                     </div>
+                    </GlobalProvider>
                 </Col>
                 <Col xs={12} md={6} className="right-sidebar">
                     <h3>Group Members</h3>
