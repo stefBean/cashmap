@@ -108,7 +108,7 @@ router.post('/', function (req, res) {
 /**
  * @swagger
  * /groups/{groupId}:
- *   put:
+ *   patch:
  *     summary: Update group details
  *     tags: [Groups]
  *     security:
@@ -139,22 +139,25 @@ router.post('/', function (req, res) {
  *       404:
  *         description: Group not found
  */
-router.put('/:groupId', function (req, res) {
+router.patch('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
     const group = groupModel[groupId];
 
     if (group && group.Members.includes(req.user.username)) {
-        group.GroupName = req.body.GroupName //|| group.GroupName;
-        group.Members = req.body.Members //|| group.Members;
+        if (req.body.GroupName !== undefined) {
+            group.GroupName = req.body.GroupName;
+        }
+        if (req.body.Members !== undefined) {
+            group.Members = req.body.Members;
+        }
 
         res.status(200).send({
             message: 'Group updated successfully',
             group: group
         });
     } else {
-        return res.status(404).send({message: 'Group not found'});
+        return res.status(404).send({ message: 'Group not found' });
     }
-
 });
 
 /**
