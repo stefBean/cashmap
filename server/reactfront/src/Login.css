@@ -21,7 +21,7 @@
 .log-form button {
     width: 100%;
     margin-top: 20px;
-    background-color: rgba(70, 116, 121, 0.45);
+    background-color: rgba(75, 116, 121, 0.45);
 }
 
 /* Media query for devices with a width of up to 600px */
