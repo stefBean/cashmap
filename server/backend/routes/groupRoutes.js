@@ -61,7 +61,7 @@ router.get('/:groupId', function (req, res) {
     const id = req.params.groupId;
     const group = Object.values(groupModel).find(group => group.GroupId === id);
 
-    if (group) {
+    if (group && group.Members.includes(req.user.username)) {
         res.send(group);
     } else {
         res.sendStatus(404);
@@ -83,9 +83,9 @@ router.get('/:groupId', function (req, res) {
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               GroupName:
  *                 type: string
- *               members:
+ *               Members:
  *                 type: array
  *                 items:
  *                   type: string
@@ -96,13 +96,13 @@ router.get('/:groupId', function (req, res) {
 router.post('/', function (req, res) {
     const newGroup = {
         GroupId: generateGroupId(),
-        Name: req.body.name,
-        Members: req.body.members,
+        GroupName: req.body.GroupName,
+        Members: req.body.Members,
         Transactions: []
     };
     groupModel[newGroup.GroupId] = newGroup;
 
-    res.status(201).send({ newGroup });
+    res.status(201).send({newGroup});
 });
 
 /**
@@ -127,9 +127,9 @@ router.post('/', function (req, res) {
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               GroupName:
  *                 type: string
- *               members:
+ *               Members:
  *                 type: array
  *                 items:
  *                   type: string
@@ -143,17 +143,18 @@ router.put('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
     const group = groupModel[groupId];
 
-    if (!group) {
-        return res.status(404).send({ message: 'Group not found' });
+    if (group && group.Members.includes(req.user.username)) {
+        group.GroupName = req.body.GroupName //|| group.GroupName;
+        group.Members = req.body.Members //|| group.Members;
+
+        res.status(200).send({
+            message: 'Group updated successfully',
+            group: group
+        });
+    } else {
+        return res.status(404).send({message: 'Group not found'});
     }
 
-    group.Name = req.body.name || group.Name;
-    group.Members = req.body.members || group.Members;
-
-    res.status(200).send({
-        message: 'Group updated successfully',
-        group: group
-    });
 });
 
 /**
@@ -179,17 +180,17 @@ router.put('/:groupId', function (req, res) {
  */
 router.delete('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
+    const selectedGroup = groupModel[groupId];
 
-    if (groupId in groupModel) {
-        const deletedGroup = groupModel[groupId];
+    if (groupId in groupModel && selectedGroup.Members.includes(req.user.username)) {
         delete groupModel[groupId];
 
         res.status(200).send({
             message: 'Group deleted successfully',
-            group: deletedGroup
+            group: selectedGroup
         });
     } else {
-        res.status(404).send({ message: 'Group not found' });
+        res.status(404).send({message: 'Group not found'});
     }
 });
 
@@ -201,4 +202,4 @@ function generateGroupId() {
     return groupId;
 }
 
-module.exports = { groupModel, router };
+module.exports = {groupModel, router};

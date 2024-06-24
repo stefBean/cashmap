@@ -1,10 +1,10 @@
-const groupModel = require("../group-model")
+const groupModel = require("../group-model");
 const express = require("express");
 const router = express.Router();
 
 /**
  * @swagger
- * /transactions/{groupId}/{transactionId}:
+ * /transactions/{GroupId}/{TransactionId}:
  *   put:
  *     summary: Edit a transaction
  *     tags: [Transactions]
@@ -12,13 +12,13 @@ const router = express.Router();
  *      - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: groupId
+ *         name: GroupId
  *         schema:
  *           type: string
  *         required: true
  *         description: The ID of the group
  *       - in: path
- *         name: transactionId
+ *         name: TransactionId
  *         schema:
  *           type: string
  *         required: true
@@ -35,36 +35,35 @@ const router = express.Router();
  *       404:
  *         description: Group or transaction not found
  */
-router.put('/:groupId/:transactionId', function (req, res) {
-    const groupId = req.params.groupId
-    const transactionId = req.params.transactionId
+router.put('/:GroupId/:TransactionId', function (req, res) {
+    const groupId = req.params.GroupId;
+    const transactionId = req.params.TransactionId;
     const transaction = req.body;
 
-    const thisGroup = Object.values(groupModel).find(group => group.GroupId === groupId);
+    const thisGroup = groupModel[groupId];
 
-    if (!thisGroup) {
-        return res.status(404).send({message: 'Group not found'});
-    }
-
-    const transactionIndex = thisGroup.Transactions.findIndex(t => t.id === transactionId);
-    if (transactionIndex !== -1) {
-        thisGroup.Transactions[transactionIndex]= {
-            ...thisGroup.Transactions[transactionIndex],
-            ...transaction,
-            TransactionId: transactionId
-        };
-        res.status(200).send({
-            message: 'Transaction updated successfully',
-            transaction: thisGroup.Transactions[transactionIndex]
-        });
+    if (thisGroup && thisGroup.Members.includes(req.user.username)) {
+        if (thisGroup.Transactions[transactionId]) {
+            thisGroup.Transactions[transactionId] = {
+                ...thisGroup.Transactions[transactionId],
+                ...transaction,
+                TransactionId: transactionId
+            };
+            res.status(200).send({
+                message: 'Transaction updated successfully',
+                transaction: thisGroup.Transactions[transactionId]
+            });
+        } else {
+            res.status(404).send({ message: 'Transaction not found' });
+        }
     } else {
-        res.status(404).send({message: 'Transaction not found'});
+        res.status(404).send({ message: 'Group not found' });
     }
-})
+});
 
 /**
  * @swagger
- * /transactions/{groupId}:
+ * /transactions/{GroupId}:
  *   get:
  *     summary: Get all transactions in a group
  *     tags: [Transactions]
@@ -72,7 +71,7 @@ router.put('/:groupId/:transactionId', function (req, res) {
  *      - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: groupId
+ *         name: GroupId
  *         schema:
  *           type: string
  *         required: true
@@ -89,19 +88,20 @@ router.put('/:groupId/:transactionId', function (req, res) {
  *       404:
  *         description: Group not found
  */
-router.get('/:groupId', function (req, res) {
-    const groupId = req.params.groupId
-    if (groupId in groupModel) {
-        const transactionsInThisGroup = groupModel[groupId].Transactions;
-        res.send(transactionsInThisGroup)
+router.get('/:GroupId', function (req, res) {
+    const groupId = req.params.GroupId;
+    const thisGroup = groupModel[groupId];
+
+    if (thisGroup && thisGroup.Members.includes(req.user.username)) {
+        res.send(Object.values(thisGroup.Transactions));
     } else {
-        res.status(404).send({message: 'Group not found'});
+        res.status(404).send({ message: 'Group not found' });
     }
-})
+});
 
 /**
  * @swagger
- * /transactions/{groupId}:
+ * /transactions/{GroupId}:
  *   post:
  *     summary: Add a new transaction
  *     tags: [Transactions]
@@ -109,7 +109,7 @@ router.get('/:groupId', function (req, res) {
  *      - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: groupId
+ *         name: GroupId
  *         schema:
  *           type: string
  *         required: true
@@ -126,28 +126,28 @@ router.get('/:groupId', function (req, res) {
  *       404:
  *         description: Group not found
  */
-router.post('/:groupId', function (req, res) {
-    const newTransaction = req.body
-    const groupId = req.params.groupId
+router.post('/:GroupId', function (req, res) {
+    const newTransaction = req.body;
+    const groupId = req.params.GroupId;
     newTransaction.TransactionId = generateTransactionId();
 
-    const thisGroup = Object.values(groupModel).find(group => group.GroupId === groupId);
+    const thisGroup = groupModel[groupId];
 
     if (thisGroup) {
-        thisGroup.Transactions.push(newTransaction);
+        thisGroup.Transactions[newTransaction.TransactionId] = newTransaction;
 
         res.status(201).send({
             message: 'Transaction added successfully',
             transaction: newTransaction
         });
     } else {
-        res.status(404).send({message: 'Group not found'});
+        res.status(404).send({ message: 'Group not found' });
     }
-})
+});
 
 /**
  * @swagger
- * /transactions/{groupId}/{transactionId}:
+ * /transactions/{GroupId}/{TransactionId}:
  *   delete:
  *     summary: Delete a transaction
  *     tags: [Transactions]
@@ -155,13 +155,13 @@ router.post('/:groupId', function (req, res) {
  *      - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: groupId
+ *         name: GroupId
  *         schema:
  *           type: string
  *         required: true
  *         description: The ID of the group
  *       - in: path
- *         name: transactionId
+ *         name: TransactionId
  *         schema:
  *           type: string
  *         required: true
@@ -172,34 +172,33 @@ router.post('/:groupId', function (req, res) {
  *       404:
  *         description: Group or transaction not found
  */
-router.delete('/:groupId/:transactionId', function (req, res) {
-    const groupId = req.params.groupId
-    const transactionId = req.params.transactionId
-    const thisGroup = Object.values(groupModel).find(group => group.GroupId === groupId);
+router.delete('/:GroupId/:TransactionId', function (req, res) {
+    const groupId = req.params.GroupId;
+    const transactionId = req.params.TransactionId;
+    const thisGroup = groupModel[groupId];
 
-    if (thisGroup) {
-        const transactionIndex = thisGroup.Transactions.findIndex(transaction => transaction.TransactionId === transactionId);
-
-        if (transactionIndex !== -1) {
-            const deletedTransaction = thisGroup.Transactions.splice(transactionIndex, 1)[0];
+    if (thisGroup && thisGroup.Members.includes(req.user.username)) {
+        if (thisGroup.Transactions[transactionId]) {
+            const deletedTransaction = thisGroup.Transactions[transactionId];
+            delete thisGroup.Transactions[transactionId];
             res.status(200).send({
                 message: 'Transaction deleted successfully',
                 transaction: deletedTransaction
             });
         } else {
-            res.status(404).send({message: 'Transaction not found'});
+            res.status(404).send({ message: 'Transaction not found' });
         }
     } else {
-        res.status(404).send({message: 'Group not found'});
+        res.status(404).send({ message: 'Group not found' });
     }
-})
+});
 
 function generateTransactionId() {
     let transactionId;
     do {
         transactionId = Math.random().toString(36).substring(2, 15);
     } while (Object.values(groupModel).some(group =>
-        group.Transactions.some(tx => tx.TransactionId === transactionId)));
+        Object.keys(group.Transactions).includes(transactionId)));
     return transactionId;
 }
 
