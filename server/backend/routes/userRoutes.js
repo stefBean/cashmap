@@ -163,4 +163,5 @@ function loginJoke(password) {
         return true;
 }
 
-module.exports = router;
+module.exports = {router, users};
+

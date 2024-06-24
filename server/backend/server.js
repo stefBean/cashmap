@@ -48,13 +48,13 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.static(path.join(__dirname, '../reactfront/build')));
 
 
-app.use('/users', userRoutes);
+app.use('/users', userRoutes.router);
 
 
 // Apply the authenticateToken middleware to routes below
 app.use(authenticateToken);
 
-app.use('/groups', groupRoutes);
+app.use('/groups', groupRoutes.router);
 app.use('/transactions', transactionRoutes);
 app.use('/currency', currencyRoutes);
 
@@ -62,15 +62,17 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../reactfront/build', 'index.html'));
 });
 
-
 app.listen(port, () => {
     console.log(`Server now listening on http://localhost:${port}/`);
 });
 
-// Optional second server for serving static files on a different port
+
+//second frontend
+const dataRoutes = require('./routesWhyNotSecondFrontend/dataRoutes'); // Ensure this path is correct
+
 const app2 = express();
 app2.use(bodyParser.json());
-app2.use(express.static(path.join(__dirname, '../frontend')));
+app2.use('/', dataRoutes);
 app2.listen(4000, () => {
     console.log(`Server now listening on http://localhost:4000/`);
 });

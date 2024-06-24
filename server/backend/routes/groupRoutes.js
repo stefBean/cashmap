@@ -191,4 +191,4 @@ function generateGroupId() {
     return groupId;
 }
 
-module.exports = router;
+module.exports = { groupModel, router };
