@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import authAxios from './authAxios';
 
 const CurrencyConverter = () => {
     const [amount, setAmount] = useState('');
@@ -9,11 +10,8 @@ const CurrencyConverter = () => {
 
     const handleConvert = async () => {
         try {
-            const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`);
-            const data = await response.json();
-            const rate = data.rates[toCurrency];
-            const result = (parseFloat(amount) * rate).toFixed(2);
-            setConvertedAmount(result);
+            const response = await authAxios.get(`http://localhost:3000/currency/convert?currencyIn=${fromCurrency}&currencyOut=${toCurrency}&amount=${amount}`);
+            setConvertedAmount(response.data.convertedAmount);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
