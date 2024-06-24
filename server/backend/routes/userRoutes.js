@@ -40,8 +40,6 @@ const groupModel = require("../group-model");
  *   get:
  *     summary: Retrieve a list of users
  *     tags: [Users]
- *     security:
- *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of users
