@@ -156,7 +156,7 @@ router.patch('/:groupId', function (req, res) {
             group: group
         });
     } else {
-        return res.status(404).send({ message: 'Group not found' });
+        return res.status(404).send({message: 'Group not found'});
     }
 });
 
@@ -186,6 +186,7 @@ router.delete('/:groupId', function (req, res) {
     const selectedGroup = groupModel[groupId];
 
     if (groupId in groupModel && selectedGroup.Members.includes(req.user.username)) {
+
         delete groupModel[groupId];
 
         res.status(200).send({
@@ -196,6 +197,91 @@ router.delete('/:groupId', function (req, res) {
         res.status(404).send({message: 'Group not found'});
     }
 });
+
+/**
+ * @swagger
+ * /groups/{groupId}/balances:
+ *   get:
+ *     summary: Get balances of the group members
+ *     tags: [Groups]
+ *     security:
+ *      - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     responses:
+ *       200:
+ *         description: Lists groups members balances
+ *       404:
+ *         description: Group not found
+ *       403:
+ *          description: User is not member of this group
+ */
+router.get('/:groupId/balances', function (req, res) {
+    const groupId = req.params.groupId;
+    const user = req.user;
+    const group = groupModel[groupId];
+
+    if (!group) {
+        return res.status(404).send({message: 'Group not found'});
+    }
+
+    if (!group.Members.includes(user.username)) {
+        return res.status(403).send({message: 'User is not a member of this group'});
+    }
+
+    const balances = calculateBalances(group, user.username);
+    res.status(200).send(balances);
+});
+
+function calculateBalances(group, username) {
+    const balances = {};
+
+    Object.values(group.Transactions).forEach(transaction => {
+
+        if (transaction.Type === "EQUAL") {
+            const amountPerPerson = transaction.Amount / transaction.Receiver.length;
+            updateEqualBalances(transaction, amountPerPerson);
+        } else if (transaction.Type === "EXACT") {
+            transaction.Receiver.forEach((receiver, index) => {
+                const exactAmount = transaction.Weight[index];
+                updateExactBalances(transaction, receiver, exactAmount);
+            });
+        }
+    });
+
+function updateEqualBalances(transaction, amountPerPerson) {
+    if (transaction.Sender === username) {
+        // User is the sender; add the amount others owe them
+        transaction.Receiver.forEach(receiver => {
+            if (receiver !== username) {
+                balances[receiver] = (balances[receiver] || 0) + amountPerPerson;
+            }
+        });
+    } else if (transaction.Receiver.includes(username)) {
+        // User is a receiver; subtract the amount they owe to the sender
+        balances[transaction.Sender] = (balances[transaction.Sender] || 0) - amountPerPerson;
+    }
+}
+
+function updateExactBalances(transaction, receiver, exactAmount) {
+    if (transaction.Sender === username && receiver !== username) {
+        // When the user is the sender in an EXACT type
+        balances[receiver] = (balances[receiver] || 0) + exactAmount;
+    }
+    if (receiver === username && transaction.Sender !== username) {
+        // When the user is the receiver in an EXACT type
+        balances[transaction.Sender] = (balances[transaction.Sender] || 0) - exactAmount;
+    }
+}
+
+return balances;
+}
+
 
 function generateGroupId() {
     let groupId;
