@@ -6,6 +6,7 @@ const authenticateToken = require('./authenticateToken');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc')
 const cookieParser = require('cookie-parser');
+const sendJsonOrXML = require('./sendJsonOrXML');
 
 const app = express();
 const port = 3000;
@@ -61,16 +62,18 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Serve static files
 app.use(express.static(path.join(__dirname, '../reactfront/build')));
 
+app.use(sendJsonOrXML);
 
-app.use('/users', userRoutes.router);
+
+app.use('/api/users', userRoutes.router);
 
 
 // Apply the authenticateToken middleware to routes below
 app.use(authenticateToken);
 
-app.use('/groups', groupRoutes.router);
-app.use('/transactions', transactionRoutes);
-app.use('/currency', currencyRoutes);
+app.use('/api/groups', groupRoutes.router);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/currency', currencyRoutes);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../reactfront/build', 'index.html'));

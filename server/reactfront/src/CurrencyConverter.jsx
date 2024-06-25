@@ -10,7 +10,7 @@ const CurrencyConverter = () => {
 
     const handleConvert = async () => {
         try {
-            const response = await authAxios.get(`http://localhost:3000/currency/convert?currencyIn=${fromCurrency}&currencyOut=${toCurrency}&amount=${amount}`);
+            const response = await authAxios.get(`http://localhost:3000/api/currency/convert?currencyIn=${fromCurrency}&currencyOut=${toCurrency}&amount=${amount}`);
             setConvertedAmount(response.data.convertedAmount);
         } catch (error) {
             console.error('Error fetching data:', error);

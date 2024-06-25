@@ -8,7 +8,7 @@ const groupModel = require("../group-model");
 
 /**
  * @swagger
- * /groups:
+ * /api/groups:
  *   get:
  *     summary: Get all groups for a user
  *     tags: [Groups]
@@ -29,12 +29,12 @@ router.get('/', function (req, res) {
             userGroups[groupName] = groupModel[groupName];
         }
     }
-    res.json(userGroups);
+    res.send(userGroups);
 });
 
 /**
  * @swagger
- * /groups/{groupId}:
+ * /api/groups/{groupId}:
  *   get:
  *     summary: Get a group by ID
  *     tags: [Groups]
@@ -70,7 +70,7 @@ router.get('/:groupId', function (req, res) {
 
 /**
  * @swagger
- * /groups:
+ * /api/groups:
  *   post:
  *     summary: Create a new group
  *     tags: [Groups]
@@ -107,37 +107,53 @@ router.post('/', function (req, res) {
 
 /**
  * @swagger
- * /groups/{groupId}:
- *   patch:
- *     summary: Update group details
+ * /api/groups:
+ *   get:
+ *     summary: Get all groups for a user
  *     tags: [Groups]
  *     security:
- *        - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: groupId
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the group
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               GroupName:
- *                 type: string
- *               Members:
- *                 type: array
- *                 items:
- *                   type: string
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Group updated successfully
- *       404:
- *         description: Group not found
+ *         description: A list of user groups
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               additionalProperties:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     example: "Group Name"
+ *                   Members:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                       example: "username"
+ *           application/xml:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 groups:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       name:
+ *                         type: string
+ *                         example: "Group Name"
+ *                       Members:
+ *                         type: array
+ *                         items:
+ *                           type: string
+ *                           example: "username"
  */
 router.patch('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
@@ -162,7 +178,7 @@ router.patch('/:groupId', function (req, res) {
 
 /**
  * @swagger
- * /groups/{groupId}:
+ * /api/groups/{groupId}:
  *   delete:
  *     summary: Delete a group
  *     tags: [Groups]
@@ -202,7 +218,7 @@ function generateGroupId() {
     do {
         groupId = Math.random().toString(36).substring(2, 9);
     } while (groupId in groupModel);
-    return groupId;
+    return "_"+groupId;
 }
 
 module.exports = {groupModel, router};

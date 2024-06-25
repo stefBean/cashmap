@@ -4,7 +4,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /transactions/{GroupId}/{TransactionId}:
+ * /api/transactions/{GroupId}/{TransactionId}:
  *   put:
  *     summary: Edit a transaction
  *     tags: [Transactions]
@@ -63,7 +63,7 @@ router.put('/:GroupId/:TransactionId', function (req, res) {
 
 /**
  * @swagger
- * /transactions/{GroupId}:
+ * /api/transactions/{GroupId}:
  *   get:
  *     summary: Get all transactions in a group
  *     tags: [Transactions]
@@ -101,7 +101,7 @@ router.get('/:GroupId', function (req, res) {
 
 /**
  * @swagger
- * /transactions/{GroupId}:
+ * /api/transactions/{GroupId}:
  *   post:
  *     summary: Add a new transaction
  *     tags: [Transactions]
@@ -147,7 +147,7 @@ router.post('/:GroupId', function (req, res) {
 
 /**
  * @swagger
- * /transactions/{GroupId}/{TransactionId}:
+ * /api/transactions/{GroupId}/{TransactionId}:
  *   delete:
  *     summary: Delete a transaction
  *     tags: [Transactions]
@@ -199,7 +199,7 @@ function generateTransactionId() {
         transactionId = Math.random().toString(36).substring(2, 15);
     } while (Object.values(groupModel).some(group =>
         Object.keys(group.Transactions).includes(transactionId)));
-    return transactionId;
+    return "_"+transactionId;
 }
 
 module.exports = router;

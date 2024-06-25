@@ -36,7 +36,7 @@ const groupModel = require("../group-model");
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   get:
  *     summary: Retrieve a list of users
  *     tags: [Users]
@@ -58,7 +58,7 @@ router.get('/', (req, res) => {
 
 /**
  * @swagger
- * /users/register:
+ * /api/users/register:
  *   post:
  *     summary: Register a new user
  *     tags: [Users]
@@ -105,7 +105,7 @@ router.post('/register', async (req, res) => {
 
 /**
  * @swagger
- * /users/login:
+ * /api/users/login:
  *   post:
  *     summary: Login a user
  *     tags: [Users]
@@ -123,8 +123,8 @@ router.post('/register', async (req, res) => {
  *                 type: string
  *                 description: The user's password
  *             example:
- *               username: johndoe
- *               password: password123
+ *               username: Tobias
+ *               password: "1234"
  *     responses:
  *       200:
  *         description: User logged in successfully
@@ -151,7 +151,7 @@ router.post('/login', async (req, res) => {
     try {
         if (await bcrypt.compare(req.body.password, user.password)) {
             const accessToken = jwt.sign(user, config.jwtSecretKey);
-            res.status(200).json({ accessToken: accessToken });
+            res.status(200).send({ accessToken: accessToken });
         } else {
             res.status(401).send('Not Allowed');
         }

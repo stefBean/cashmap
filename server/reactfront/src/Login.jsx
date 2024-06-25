@@ -19,7 +19,7 @@ function Login() {
     }
 
     try {
-      const response = await axios.post('/users/login', { username, password });
+      const response = await axios.post('/api/users/login', { username, password });
 
       if (response.status === 200) {
         setAuthToken(response.data.accessToken);
@@ -46,7 +46,7 @@ function Login() {
     }
 
     try {
-      const response = await axios.post('/users/register', { username, password });
+      const response = await axios.post('/api/users/register', { username, password });
 
       if (response.status === 201) {
         alert("User registered successfully.");
