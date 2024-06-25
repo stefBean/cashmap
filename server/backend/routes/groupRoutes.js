@@ -216,7 +216,7 @@ router.delete('/:groupId', function (req, res) {
 
 /**
  * @swagger
- * /groups/{groupId}/balances:
+ * /api/groups/{groupId}/balances:
  *   get:
  *     summary: Get balances of the group members
  *     tags: [Groups]
@@ -257,6 +257,10 @@ router.get('/:groupId/balances', function (req, res) {
 function calculateBalances(group, username) {
     const balances = {};
 
+    group.Members.forEach(member => {
+        balances[member] = 0;
+    });
+
     Object.values(group.Transactions).forEach(transaction => {
 
         if (transaction.Type === "EQUAL") {
@@ -275,23 +279,23 @@ function updateEqualBalances(transaction, amountPerPerson) {
         // User is the sender; add the amount others owe them
         transaction.Receiver.forEach(receiver => {
             if (receiver !== username) {
-                balances[receiver] = (balances[receiver] || 0) + amountPerPerson;
+                balances[receiver] += amountPerPerson;
             }
         });
     } else if (transaction.Receiver.includes(username)) {
         // User is a receiver; subtract the amount they owe to the sender
-        balances[transaction.Sender] = (balances[transaction.Sender] || 0) - amountPerPerson;
+        balances[transaction.Sender] -= amountPerPerson;
     }
 }
 
 function updateExactBalances(transaction, receiver, exactAmount) {
     if (transaction.Sender === username && receiver !== username) {
         // When the user is the sender in an EXACT type
-        balances[receiver] = (balances[receiver] || 0) + exactAmount;
+        balances[receiver] += exactAmount;
     }
     if (receiver === username && transaction.Sender !== username) {
         // When the user is the receiver in an EXACT type
-        balances[transaction.Sender] = (balances[transaction.Sender] || 0) - exactAmount;
+        balances[transaction.Sender] -= exactAmount;
     }
 }
 
