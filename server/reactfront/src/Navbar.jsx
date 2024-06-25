@@ -23,7 +23,7 @@ const Navbar = () => {
             <Link className="nav-link" to="/currency">Currency Converter</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/weather">Currency Converter</Link>
+            <Link className="nav-link" to="/weather">Check your next purchase</Link>
           </li>
         </ul>
       </div>
