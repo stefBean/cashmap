@@ -1,65 +1,100 @@
 // src/Groups.js
-import React, { useState } from 'react';
-import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap';
+
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Form, Button, Tabs, Tab } from 'react-bootstrap';
 import './index.css'; // Custom CSS for styling
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
 import GroupItem from './GroupItem';
+import authAxios from './authAxios';
+import './index.css';
+
 
 const Groups = () => {
-    const [groups, setGroups] = useState([
-        { key: 'home', title: 'Home', members: [] },
-        { key: 'school', title: 'School' , members: [] },
-        { key: 'holiday', title: 'Holiday', members: [] }
-    ]);
-    const [activeKey, setActiveKey] = useState(groups[0]?.key || 'home');
+    const [groups, setGroups] = useState([]);
+    const [activeKey, setActiveKey] = useState('');
     const [newGroupTitle, setNewGroupTitle] = useState('');
 
-    const addGroup = () => {
-        const key = newGroupTitle.toLowerCase().replace(/\s+/g, '-');
-        const newGroup = { key, title: newGroupTitle, members: [] };
-        setGroups([...groups, newGroup]);
-        setNewGroupTitle('');
-        setActiveKey(key);
-    };
+    useEffect(() => {
+        fetchGroups();
+    }, []);
 
-    const deleteGroup = (key) => {
-        setGroups(groups.filter(group => group.key !== key));
-        if (activeKey === key && groups.length > 1) {
-            setActiveKey(groups[0].key);
-        } else if (groups.length === 1) {
-            setActiveKey('');
+    const fetchGroups = async () => {
+        try {
+            const response = await authAxios.get('/groups');
+            console.log('Fetched groups:', response.data);
+            const fetchedGroups = Object.values(response.data);
+            setGroups(fetchedGroups);
+            if (fetchedGroups.length > 0) {
+                setActiveKey(fetchedGroups[0].GroupId);
+            }
+        } catch (error) {
+            console.error('Error fetching groups:', error);
         }
     };
 
-    const addMemberToGroup = (key, member) => {
-        setGroups(groups.map(group =>
-        group.key === key ? { ...group, members: [...group.members, member] } : group));
+    const addGroup = async () => {
+        if (newGroupTitle.trim() === '') return;
+        const newGroup = {
+            GroupName: newGroupTitle,
+            Members: [] // Initial members can be an empty array
+        };
+        try {
+            const response = await authAxios.post('/groups', newGroup);
+            setGroups([...groups, response.data.newGroup]);
+            setNewGroupTitle('');
+            setActiveKey(response.data.newGroup.GroupId);
+        } catch (error) {
+            console.error('Error adding group:', error);
+        }
+    };
+
+    const deleteGroup = async (groupId) => {
+        try {
+            await authAxios.delete(`/groups/${groupId}`);
+            setGroups(groups.filter(group => group.GroupId !== groupId));
+            if (activeKey === groupId && groups.length > 1) {
+                setActiveKey(groups[0].GroupId);
+            } else if (groups.length === 1) {
+                setActiveKey('');
+            }
+        } catch (error) {
+            console.error('Error deleting group:', error);
+        }
+    };
+
+    const addTransaction = async (groupId, transaction) => {
+        try {
+            const response = await authAxios.post(`/transactions/${groupId}`, transaction);
+            const updatedGroup = { ...groups.find(group => group.GroupId === groupId) };
+            updatedGroup.Transactions.push(response.data.transaction);
+            setGroups(groups.map(group => (group.GroupId === groupId ? updatedGroup : group)));
+        } catch (error) {
+            console.error('Error adding transaction:', error);
+        }
     };
 
     return (
-        <Container fluid className="groups-container">
+        <Container fluid className="groups-container whiteBackground">
             <Row>
                 <Col className="text-center">
-                    <h2>Groups</h2>
+                    <h1 className="headline">Groups</h1>
                 </Col>
             </Row>
             <Row>
                 <Tabs
                     activeKey={activeKey}
                     onSelect={(k) => setActiveKey(k)}
-                    id="uncontrolled-tab-example"
-                    className="mb-3">
-                    {groups.map(group => (
-                        <Tab key={group.key} eventKey={group.key} title={group.title}>
+                    id="group-tabs"
+                    className="mb-3 whiteBackground">
+                    {Array.isArray(groups) && groups.map(group => (
+                        <Tab key={group.GroupId} eventKey={group.GroupId} title={group.GroupName}>
                             <GroupItem
                                 group={group}
-                                deleteGroup={() => deleteGroup(group.key)}
-                                addMember={(member) => addMemberToGroup(group.key, member)}
+                                deleteGroup={() => deleteGroup(group.GroupId)}
+                                addTransaction={(transaction) => addTransaction(group.GroupId, transaction)}
                             />
                         </Tab>
                     ))}
-                    <Tab eventKey="add-group" title="+">
+                    <Tab eventKey="add-group" title="+" className='whiteBackground'>
                         <Form className="p-3">
                             <Form.Group controlId="formGroupTitle">
                                 <Form.Label>New Group Title</Form.Label>
@@ -80,6 +115,5 @@ const Groups = () => {
         </Container>
     );
 };
-
 
 export default Groups;

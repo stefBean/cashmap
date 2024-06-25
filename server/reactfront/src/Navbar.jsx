@@ -13,7 +13,7 @@ function Navigation() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Link className="nav-link" to="/homepage">Home</Link>
-            <Link className="nav-link" to="/groups">Groups</Link>
+            <Link className="nav-link" to="/group">Group</Link>
             <Link className="nav-link" to="/currency">CurrencyConverter</Link>
             <Link className="nav-link" to="/about">About</Link>
           </Nav>

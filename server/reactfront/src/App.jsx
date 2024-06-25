@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Navigation from './Navbar';
 import Home from './Home';
-import Groups from './Groups';
+import Group from './Groups';
 import CurrencyConverter from './CurrencyConverter';
 import Login from './Login';
 import { setAuthToken } from './authAxios';
@@ -23,7 +23,7 @@ function App() {
       <Navigation />
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/groups" element={<Groups />} />
+        <Route path="/group" element={<Group />} />
         <Route path="/currency" element={<CurrencyConverter />} />
         <Route path="/login" element={<Login />} />
         <Route path="/homepage" element={<Home />}  />

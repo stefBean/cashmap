@@ -1,3 +1,7 @@
+body, html {
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,11 +9,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: url(resources/Homebackground.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
+
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.headline {
+  font-size: 3em;
+  font-weight: bold;
+  padding: 20px;
 }
 
 /* Groups.js */
@@ -33,3 +50,10 @@ code {
   margin-top: 20px;
 }
 
+.whiteBackground {
+  background-color: white;
+}
+
+.btn, .btn-primary {
+  background-color: #042B2F;
+}
