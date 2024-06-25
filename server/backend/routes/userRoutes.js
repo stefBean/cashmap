@@ -151,6 +151,7 @@ router.post('/login', async (req, res) => {
     try {
         if (await bcrypt.compare(req.body.password, user.password)) {
             const accessToken = jwt.sign(user, config.jwtSecretKey);
+            res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: 'Strict' });
             res.status(200).send({ accessToken: accessToken });
         } else {
             res.status(401).send('Not Allowed');

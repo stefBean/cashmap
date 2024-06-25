@@ -24,7 +24,7 @@ function Login() {
       if (response.status === 200) {
         setAuthToken(response.data.accessToken);
         localStorage.setItem('accessToken', response.data.accessToken);
-        document.cookie = `accessToken=${response.data.accessToken};path=/;`;
+        //document.cookie = `accessToken=${response.data.accessToken};path=/;`;
         navigate('/homepage');
       } else {
         throw new Error('Login failed.');
