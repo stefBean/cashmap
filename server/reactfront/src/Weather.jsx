@@ -2,9 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import authAxios from './authAxios';
 
-
 function Weather() {
-    console.log("weather");
     const [city, setCity] = useState('');
     const [weatherData, setWeatherData] = useState(null);
     const [selectedItem, setSelectedItem] = useState('');
@@ -13,39 +11,41 @@ function Weather() {
 
     const apiKey = 'kltMisTLf100bVJ77KEjhhz600YCbiHx';
 
-    useEffect(() => {                       //run once webpage loads
+    const fetchWeatherData = () => {
         if (city) {
             const options = {
-            method: 'GET', headers:
-                {accept: 'application/json'}
-        };
+                method: 'GET',
+                headers: {accept: 'application/json'}
+            };
 
-        fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${city}&apikey=${apiKey}`, options)
-            .then(response => response.json())
-            .then(data => {
-                // Set the weather data to state
-                setWeatherData(data);
-            })
-            .catch(err => {
-                // Set the error to state if there is an error
-                setError(err);
-                console.error(err);
-            });
-    }
-    });
-
-    function recommend() {
-
-        const weatherCode = weatherData.data.values.weatherCode;
-        let message;
-        if (selectedItem === 'umbrella' && (weatherCode=== "4001" || weatherCode === "4200" || weatherCode === "4201")) {
-            message = 'Yes, buy an umbrella!';
-        } else if (selectedItem === 'sunglasses' && (weatherCode === "1000" || weatherCode === "1100")) {
-            message = 'Yes, buy sunglasses!';
+            fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${city}&apikey=${apiKey}`, options)
+                .then(response => response.json())
+                .then(data => {
+                    // Set the weather data to state
+                    setWeatherData(data);
+                })
+                .catch(err => {
+                    // Set the error to state if there is an error
+                    setError(err);
+                    console.error(err);
+                });
         }
+    };
 
-        setRecommendation(message);
-    }
+    const recommend = () => {
+        if (weatherData && weatherData.data && weatherData.data.values) {
+            const weatherCode = weatherData.data.values.weatherCode;
+            let message;
+            if (selectedItem === 'umbrella' && (weatherCode === 4001 || weatherCode === 4200 || weatherCode === 4201)) {
+                message = 'Yes, buy an umbrella!';
+            } else if (selectedItem === 'sunglasses' && (weatherCode === 1000 || weatherCode === 1100)) {
+                message = 'Yes, buy sunglasses!';
+            } else {
+                message = `No need to buy ${selectedItem} right now.`;
+            }
+            setRecommendation(message);
+        }
+    };
 
     return (
         <Container>
@@ -75,10 +75,12 @@ function Weather() {
                                 {/* Add more items!! */}
                             </Form.Control>
                         </Form.Group>
-                        <Button variant="primary" onClick={recommend}>
+                        <Button variant="primary" onClick={() => { fetchWeatherData(); recommend(); }}>
                             Check!
                         </Button>
                     </Form>
+                    {recommendation && <p>{recommendation}</p>}
+                    {error && <p>Error: {error.message}</p>}
                 </Col>
             </Row>
         </Container>
