@@ -21,6 +21,7 @@ const Groups = () => {
         setGroups([...groups, newGroup]);
         setNewGroupTitle('');
         setActiveKey(key);
+
     };
 
     const deleteGroup = (key) => {
