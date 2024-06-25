@@ -1,5 +1,5 @@
 // src/Groups.js
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap';
 import './index.css'; // Custom CSS for styling
 import {Header} from './components/Header'
@@ -11,17 +11,11 @@ import{GlobalProvider} from './context/GlobalState'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './context/ExpenseTracker.css';
 
-
-const GroupItem = () => {
+const GroupItem = ({ group, deleteGroup, addMember }) => {
     const [expenses, setExpenses] = useState([]);
     const [newExpense, setNewExpense] = useState('');
     const [lastExpenses, setLastExpenses] = useState([]);
-    const [people, setPeople] = useState([
-        { name: 'Aida', amountOwed: 0, amountOwing: 0 },
-        { name: 'Tobias', amountOwed: 0, amountOwing: 0 },
-        { name: 'Anna', amountOwed: 0, amountOwing: 0 }
-        // Add more members as needed
-    ]);
+    const [newMemberName, setNewMemberName] = useState('');
     const [joke, setJoke] = useState('');
 
     const addExpense = () => {
@@ -40,13 +34,23 @@ const GroupItem = () => {
         setNewExpense(''); // Clear input field
 
         // Update people's amounts (demo: randomly assign amounts owed)
-        const updatedPeople = people.map(person => ({
-            ...person,
-            amountOwing: person.amountOwing + Math.floor(Math.random() * 10),
-            amountOwed: person.amountOwed + Math.floor(Math.random() * 10)
+        const updatedMembers = group.members.map(member => ({
+            ...member,
+            amountOwing: member.amountOwing + Math.floor(Math.random() * 10),
+            amountOwed: member.amountOwed + Math.floor(Math.random() * 10)
         }));
-        setPeople(updatedPeople);
+        addMember(group.key, updatedMembers);
     };
+
+    const handleAddMember = () => {
+        if(newMemberName.trim() === '') {
+            return;
+        }
+
+        const newMember = { name: newMemberName, amountOwing: 0, amountOwed: 0 };
+        addMember(newMember);
+        setNewMemberName('');
+    }
 
     const fetchJoke = () => {
         fetch('https://api.allorigins.win/get?url=https://www.yomama-jokes.com/api/v1/jokes/random/')
@@ -58,34 +62,50 @@ const GroupItem = () => {
             .catch(error => {
                 console.error('Error fetching joke:', error);
             });
-    };      
+    };
 
     return (
         <Container fluid className="groups-container">
-            
             <Row>
                 <Col xs={12} md={6} className="left-sidebar">
                     <GlobalProvider>
-                    <Header/>
-                    <div className="container">
-                    <Balance/>
-                    <IncomeExpenses/>
-                    <TransactionList/>
-                    <AddTransaction/>
-                    </div>
+                        <Header />
+                        <div className="container">
+                            <Balance />
+                            <IncomeExpenses />
+                            <TransactionList />
+                            <AddTransaction />
+                        </div>
                     </GlobalProvider>
                 </Col>
                 <Col xs={12} md={6} className="right-sidebar">
                     <h3>Group Members</h3>
                     <Card style={{ width: '18rem' }}>
                         <ListGroup variant="flush">
-                                {people.map((person, index) => (
-                                    <ListGroup.Item key={index}>
-                                        {person.name} - Owing: ${person.amountOwing} / Owed: ${person.amountOwed}
-                                    </ListGroup.Item>
-                                ))}
+                            {group.members.map((member, index) => (
+                                <ListGroup.Item key={index}>
+                                    {member.name} - Owing: ${member.amountOwing} / Owed: ${member.amountOwed}
+                                </ListGroup.Item>
+                            ))}
                         </ListGroup>
                     </Card>
+                    <Form className="mt-3">
+                        <Form.Group controlId="formMemberName">
+                            <Form.Label>New Member Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter member name"
+                                value={newMemberName}
+                                onChange={(e) => setNewMemberName(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Button variant="primary" className="mt-2" onClick={handleAddMember}>
+                            Add Member
+                        </Button>
+                    </Form>
+                    <Button variant="danger" className="mt-3" onClick={deleteGroup}>
+                        Delete Group
+                    </Button>
                     <Button variant="primary" className="mt-3" onClick={fetchJoke}>
                         Get Yo Mama Joke
                     </Button>
@@ -100,9 +120,10 @@ const GroupItem = () => {
                         </Card>
                     )}
                 </Col>
-            </Row>                    
+            </Row>
         </Container>
     );
 };
+
 
 export default GroupItem;
