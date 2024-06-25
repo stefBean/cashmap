@@ -15,7 +15,6 @@ function Navigation() {
                         <Link className="nav-link" to="/homepage">Home</Link>
                         <Link className="nav-link" to="/group">Group</Link>
                         <Link className="nav-link" to="/currency">CurrencyConverter</Link>
-                        <Link className="nav-link" to="/about">About</Link>
                         <Link className="nav-link" to="/weather">Check your next purchase</Link>
                     </Nav>
                 </Navbar.Collapse>

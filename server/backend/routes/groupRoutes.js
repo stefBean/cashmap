@@ -97,7 +97,7 @@ router.post('/', function (req, res) {
     const newGroup = {
         GroupId: generateGroupId(),
         GroupName: req.body.GroupName,
-        Members: req.body.Members,
+        Members: [req.user.username],
         Transactions: []
     };
     groupModel[newGroup.GroupId] = newGroup;

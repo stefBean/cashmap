@@ -16,7 +16,7 @@ const Groups = () => {
 
     const fetchGroups = async () => {
         try {
-            const response = await authAxios.get('/groups');
+            const response = await authAxios.get('/api/groups');
             console.log('Fetched groups:', response.data);
             const fetchedGroups = Object.values(response.data);
             setGroups(fetchedGroups);
@@ -32,10 +32,9 @@ const Groups = () => {
         if (newGroupTitle.trim() === '') return;
         const newGroup = {
             GroupName: newGroupTitle,
-            Members: [] // Initial members can be an empty array
         };
         try {
-            const response = await authAxios.post('/groups', newGroup);
+            const response = await authAxios.post('/api/groups', newGroup);
             setGroups([...groups, response.data.newGroup]);
             setNewGroupTitle('');
             setActiveKey(response.data.newGroup.GroupId);
@@ -46,7 +45,7 @@ const Groups = () => {
 
     const deleteGroup = async (groupId) => {
         try {
-            await authAxios.delete(`/groups/${groupId}`);
+            await authAxios.delete(`/api/groups/${groupId}`);
             setGroups(groups.filter(group => group.GroupId !== groupId));
             if (activeKey === groupId && groups.length > 1) {
                 setActiveKey(groups[0].GroupId);

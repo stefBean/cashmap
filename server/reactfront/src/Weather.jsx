@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import {Form, Button, Container, Row, Col} from 'react-bootstrap';
 
 function Weather() {
     const [city, setCity] = useState('');
@@ -35,16 +35,18 @@ function Weather() {
             let message;
 
             if (selectedItem === 'umbrella' && (weatherCode === 4001 || weatherCode === 4200 || weatherCode === 4201)) {
-                message = 'Yes, buy an umbrella!';
+                message = 'Yes it is raining, buy an umbrella!';
             } else if (selectedItem === 'sunglasses' && (weatherCode === 1000 || weatherCode === 1100)) {
-                message = 'Yes, buy sunglasses!';
-            } else if(selectedItem === 'mittens' && (weatherCode === "5000" || weatherCode === "5100" || weatherCode === "5101")){
-            message = 'Yes, buy mittens!';
+                message = 'Yes is sunny, buy sunglasses!';
+            } else if (selectedItem === 'mittens' && (weatherCode === "5000" || weatherCode === "5100" || weatherCode === "5101")) {
+                message = 'Yes it is snowing, buy mittens!';
             } else if (selectedItem === 'raincoat' && (weatherCode === 4001 || weatherCode === 4200 || weatherCode === 4201)) {
-                message = 'Yes, buy an raincoat!';
+                message = 'Yes it is raining, buy an raincoat!';
             } else if (selectedItem === 'lightening rod' && (weatherCode === 8000)) {
-                message = 'Yes, buy an lightening rod!';
-            }
+                message = 'Yes it is stormy, buy an lightening rod!';
+            } else if (selectedItem === 'Please choose') {
+                message = '';
+            } else message = 'The current weather does not give a clear indication!';
             setRecommendation(message);
         }
     };
@@ -71,15 +73,19 @@ function Weather() {
                                 value={selectedItem}
                                 onChange={(e) => setSelectedItem(e.target.value)}
                             >
+                                <option value="Please choose">Please choose</option>
                                 <option value="umbrella">umbrella</option>
                                 <option value="sunglasses">sunglasses</option>
                                 <option value="raincoat">raincoat</option>
                                 <option value="mittens">mittens</option>
                                 <option value="lightening rod">lightening rod</option>
-                                {/* Add more items if necessary */}
+
                             </Form.Control>
                         </Form.Group>
-                        <Button variant="primary" onClick={() => { fetchWeatherData(); recommend(); }}>
+                        <Button variant="primary" onClick={() => {
+                            fetchWeatherData();
+                            recommend();
+                        }}>
                             Check!
                         </Button>
                     </Form>

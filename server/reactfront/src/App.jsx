@@ -21,10 +21,10 @@ function App() {
 
     return (
         <div>
-            <Navbar/>
+            <Navigation/>
             <Routes>
                 <Route path="/" element={<Login/>}/>
-                <Route path="/group" element={<Groups/>}/>
+                <Route path="/group" element={<Group/>}/>
                 <Route path="/currency" element={<CurrencyConverter/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/homepage" element={<Home/>}/>
