@@ -33,6 +33,7 @@ function Weather() {
         if (weatherData && weatherData.data && weatherData.data.values) {
             const weatherCode = weatherData.data.values.weatherCode;
             let message;
+
             if (selectedItem === 'umbrella' && (weatherCode === 4001 || weatherCode === 4200 || weatherCode === 4201)) {
                 message = 'Yes, buy an umbrella!';
             } else if (selectedItem === 'sunglasses' && (weatherCode === 1000 || weatherCode === 1100)) {
