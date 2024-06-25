@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import authAxios from './authAxios';
 
 function Weather() {
     const [city, setCity] = useState('');
@@ -21,11 +20,9 @@ function Weather() {
             fetch(`https://api.tomorrow.io/v4/weather/realtime?location=${city}&apikey=${apiKey}`, options)
                 .then(response => response.json())
                 .then(data => {
-                    // Set the weather data to state
                     setWeatherData(data);
                 })
                 .catch(err => {
-                    // Set the error to state if there is an error
                     setError(err);
                     console.error(err);
                 });
@@ -40,8 +37,12 @@ function Weather() {
                 message = 'Yes, buy an umbrella!';
             } else if (selectedItem === 'sunglasses' && (weatherCode === 1000 || weatherCode === 1100)) {
                 message = 'Yes, buy sunglasses!';
-            } else {
-                message = `No need to buy ${selectedItem} right now.`;
+            } else if(selectedItem === 'mittens' && (weatherCode === "5000" || weatherCode === "5100" || weatherCode === "5101")){
+            message = 'Yes, buy mittens!';
+            } else if (selectedItem === 'raincoat' && (weatherCode === 4001 || weatherCode === 4200 || weatherCode === 4201)) {
+                message = 'Yes, buy an raincoat!';
+            } else if (selectedItem === 'lightening rod' && (weatherCode === 8000)) {
+                message = 'Yes, buy an lightening rod!';
             }
             setRecommendation(message);
         }
@@ -71,8 +72,10 @@ function Weather() {
                             >
                                 <option value="umbrella">umbrella</option>
                                 <option value="sunglasses">sunglasses</option>
+                                <option value="raincoat">raincoat</option>
                                 <option value="mittens">mittens</option>
-                                {/* Add more items!! */}
+                                <option value="lightening rod">lightening rod</option>
+                                {/* Add more items if necessary */}
                             </Form.Control>
                         </Form.Group>
                         <Button variant="primary" onClick={() => { fetchWeatherData(); recommend(); }}>
