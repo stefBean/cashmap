@@ -17,6 +17,7 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
     const [lastExpenses, setLastExpenses] = useState([]);
     const [newMemberName, setNewMemberName] = useState('');
     const [joke, setJoke] = useState('');
+    const [email, setEmail] = useState('');
 
     const addExpense = () => {
         if (newExpense.trim() === '') {
@@ -61,6 +62,19 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
             })
             .catch(error => {
                 console.error('Error fetching joke:', error);
+            });
+    };
+
+    const sendEmail = () => {
+        fetch('https://api.mailgun.net/v3/sandbox61f0a2c178734ffa9b4fa1f0f41d6278.mailgun.org/messages')
+            .then(response => response.text())
+            .then(result => {
+                console.log(result);
+                alert('Email sent successfully');
+            })
+            .catch(error => {
+                console.error('Error sending email: ', error);
+                alert('Error sending email');
             });
     };
 
@@ -113,9 +127,19 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
                         <Card className="mt-3">
                             <Card.Body>
                                 <Card.Text>{joke}</Card.Text>
-                                <Button variant="secondary" onClick={() => window.location.href = `mailto:?body=${joke}`}>
+                                <Form className="mt-3">
+                                        <Form.Group controlId="formEmail">
+                                            <Form.Label>Email Address</Form.Label>
+                                            <Form.Control
+                                            type="email"
+                                            placeholder="Enter email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}/>
+                                        </Form.Group>
+                                    <Button variant="secondary" className ="mt-2" onClick={sendEmail}>
                                     Send by Email
-                                </Button>
+                                    </Button>
+                                </Form>
                             </Card.Body>
                         </Card>
                     )}
