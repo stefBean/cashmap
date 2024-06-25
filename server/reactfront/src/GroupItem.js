@@ -125,4 +125,5 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
     );
 };
 
+
 export default GroupItem;
