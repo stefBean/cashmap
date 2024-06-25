@@ -10,8 +10,7 @@ module.exports = {
                 Amount: 80,
                 Sender: "Tobias",
                 Receiver: ["Tobias", "Anna", "Stefi", "Aida"],
-                Type: "EXACT",
-                Weight: ["10, 20, 30, 20"]
+                Type: "EQUAL",
             },
             "_3n5b9m8df0xi6": {
                 Description: "Test",
