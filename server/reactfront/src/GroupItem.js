@@ -11,8 +11,6 @@ import { AddTransaction } from './components/AddTransaction';
 import { GlobalProvider } from './context/GlobalState';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './context/ExpenseTracker.css';
-import './index.css';
-
 
 const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
     const [newExpense, setNewExpense] = useState('');
@@ -68,7 +66,7 @@ const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
     return (
         <Container fluid className="groups-container">
             <Row>
-                <Col xs={12} md={6} className="left-sidebar whiteBackground">
+                <Col xs={12} md={6} className="left-sidebar">
                     <GlobalProvider>
                         <Header />
                         <div className="container">
@@ -79,7 +77,7 @@ const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
                         </div>
                     </GlobalProvider>
                 </Col>
-                <Col xs={12} md={6} className="right-sidebar whiteBackground">
+                <Col xs={12} md={6} className="right-sidebar">
                     <h3>Group Members</h3>
                     <Card style={{ width: '18rem' }}>
                         <ListGroup variant="flush">

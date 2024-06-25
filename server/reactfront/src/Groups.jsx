@@ -1,12 +1,9 @@
 // src/Groups.js
-
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Tabs, Tab } from 'react-bootstrap';
-import './index.css'; // Custom CSS for styling
+import './index.css'; 
 import GroupItem from './GroupItem';
 import authAxios from './authAxios';
-import './index.css';
-
 
 const Groups = () => {
     const [groups, setGroups] = useState([]);
@@ -61,22 +58,23 @@ const Groups = () => {
         }
     };
 
-    const addTransaction = async (groupId, transaction) => {
-        try {
-            const response = await authAxios.post(`/transactions/${groupId}`, transaction);
-            const updatedGroup = { ...groups.find(group => group.GroupId === groupId) };
-            updatedGroup.Transactions.push(response.data.transaction);
-            setGroups(groups.map(group => (group.GroupId === groupId ? updatedGroup : group)));
-        } catch (error) {
-            console.error('Error adding transaction:', error);
-        }
+    const addMemberToGroup = (groupId, member) => {
+        setGroups(groups.map(group =>
+            group.GroupId === groupId ? { ...group, Members: [...group.Members, member] } : group
+        ));
+    };
+
+    const updateGroupMembers = (groupId, updatedMembers) => {
+        setGroups(groups.map(group =>
+            group.GroupId === groupId ? { ...group, Members: updatedMembers } : group
+        ));
     };
 
     return (
         <Container fluid className="groups-container whiteBackground">
             <Row>
                 <Col className="text-center">
-                    <h1 className="headline">Groups</h1>
+                    <h2>Groups</h2>
                 </Col>
             </Row>
             <Row>
@@ -84,17 +82,18 @@ const Groups = () => {
                     activeKey={activeKey}
                     onSelect={(k) => setActiveKey(k)}
                     id="group-tabs"
-                    className="mb-3 whiteBackground">
+                    className="mb-3">
                     {Array.isArray(groups) && groups.map(group => (
                         <Tab key={group.GroupId} eventKey={group.GroupId} title={group.GroupName}>
                             <GroupItem
                                 group={group}
                                 deleteGroup={() => deleteGroup(group.GroupId)}
-                                addTransaction={(transaction) => addTransaction(group.GroupId, transaction)}
+                                addMember={(member) => addMemberToGroup(group.GroupId, member)}
+                                updateMembers={(updatedMembers) => updateGroupMembers(group.GroupId, updatedMembers)}
                             />
                         </Tab>
                     ))}
-                    <Tab eventKey="add-group" title="+" className='whiteBackground'>
+                    <Tab eventKey="add-group" title="+">
                         <Form className="p-3">
                             <Form.Group controlId="formGroupTitle">
                                 <Form.Label>New Group Title</Form.Label>
