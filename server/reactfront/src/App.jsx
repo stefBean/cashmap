@@ -1,7 +1,7 @@
 // App.jsx
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import Navbar from './Navbar';
+import Navigation from './Navbar';
 import Home from './Home';
 import Groups from './Groups';
 import CurrencyConverter from './CurrencyConverter';
@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div>
-      <Navbar />
+      <Navigation />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/groups" element={<Groups />} />
