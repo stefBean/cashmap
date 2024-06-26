@@ -11,15 +11,26 @@ import {AddTransaction} from './components/AddTransaction';
 import {GlobalProvider} from './context/GlobalState';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './context/ExpenseTracker.css';
+import axios from "axios";
 
 const GroupItem = ({ group, deleteGroup, addMember, updateMembers, removeMember }) => {
     const [newExpense, setNewExpense] = useState('');
     const [newMemberName, setNewMemberName] = useState('');
     const [joke, setJoke] = useState('');
+    const [transactions, setTransactions] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch initial data or perform other side effects here
-    }, []); // Empty dependency array means this effect runs only once, like componentDidMount
+        axios.get(`/api/transactions/${group.GroupId}`)
+            .then(response => {
+                setTransactions(response.data); // Set the fetched transactions
+                setError(null); // Clear any previous errors on successful load
+            })
+            .catch(err => {
+                setError('Failed to fetch transactions'); // Handle errors like network issues
+                setTransactions([]); // Clear existing transactions if load fails
+            });
+    }, [group.GroupId]);
 
     const addExpense = () => {
         if (newExpense.trim() === '') {
@@ -72,10 +83,10 @@ const GroupItem = ({ group, deleteGroup, addMember, updateMembers, removeMember 
                     <GlobalProvider>
                         <Header />
                         <div className="container">
-                            <Balance />
-                            <IncomeExpenses />
-                            <TransactionList />
-                            <AddTransaction />
+                            <Balance groupId={group.GroupId} />
+                            <IncomeExpenses groupId={group.GroupId} />
+                            <TransactionList transactions={transactions} />
+                            <AddTransaction groupId={group.GroupId} members={group.Members}/>
                         </div>
                     </GlobalProvider>
                 </Col>

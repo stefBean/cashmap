@@ -41,12 +41,12 @@ function Weather() {
             } else if (selectedItem === 'mittens' && (weatherCode === "5000" || weatherCode === "5100" || weatherCode === "5101")) {
                 message = 'Yes it is snowing, buy mittens!';
             } else if (selectedItem === 'raincoat' && (weatherCode === 4001 || weatherCode === 4200 || weatherCode === 4201)) {
-                message = 'Yes it is raining, buy an raincoat!';
+                message = 'Yes it is raining, buy a raincoat!';
             } else if (selectedItem === 'lightening rod' && (weatherCode === 8000)) {
-                message = 'Yes it is stormy, buy an lightening rod!';
+                message = 'Yes it is stormy, buy a lightening rod!';
             } else if (selectedItem === 'Please choose') {
                 message = '';
-            } else message = 'The current weather does not give a clear indication!';
+            } else message = 'No need to buy! Save your money!';
             setRecommendation(message);
         }
     };
