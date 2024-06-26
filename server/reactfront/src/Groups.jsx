@@ -1,7 +1,7 @@
 // src/Groups.js
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Tabs, Tab } from 'react-bootstrap';
-import './index.css'; 
+import './index.css';
 import GroupItem from './GroupItem';
 import authAxios from './authAxios';
 
@@ -16,7 +16,7 @@ const Groups = () => {
 
     const fetchGroups = async () => {
         try {
-            const response = await authAxios.get('/groups');
+            const response = await authAxios.get('/api/groups');
             console.log('Fetched groups:', response.data);
             const fetchedGroups = Object.values(response.data);
             setGroups(fetchedGroups);
@@ -32,10 +32,9 @@ const Groups = () => {
         if (newGroupTitle.trim() === '') return;
         const newGroup = {
             GroupName: newGroupTitle,
-            Members: [] // Initial members can be an empty array
         };
         try {
-            const response = await authAxios.post('/groups', newGroup);
+            const response = await authAxios.post('/api/groups', newGroup);
             setGroups([...groups, response.data.newGroup]);
             setNewGroupTitle('');
             setActiveKey(response.data.newGroup.GroupId);
@@ -46,7 +45,7 @@ const Groups = () => {
 
     const deleteGroup = async (groupId) => {
         try {
-            await authAxios.delete(`/groups/${groupId}`);
+            await authAxios.delete(`/api/groups/${groupId}`);
             setGroups(groups.filter(group => group.GroupId !== groupId));
             if (activeKey === groupId && groups.length > 1) {
                 setActiveKey(groups[0].GroupId);
@@ -58,11 +57,43 @@ const Groups = () => {
         }
     };
 
-    const addMemberToGroup = (groupId, member) => {
-        setGroups(groups.map(group =>
-            group.GroupId === groupId ? { ...group, Members: [...group.Members, member] } : group
-        ));
+    const addMemberToGroup = async (groupId, member) => {
+        try {
+            const groupToUpdate = groups.find(group => group.GroupId === groupId);
+            const updatedMembers = [...groupToUpdate.Members, member];
+            const response = await authAxios.put(`/api/groups/${groupId}`, {
+                ...groupToUpdate,
+                Members: updatedMembers
+            });
+            setGroups(prevGroups =>
+                prevGroups.map(group =>
+                    group.GroupId === groupId ? response.data.group : group
+                )
+            );
+        } catch (error) {
+            console.error('Error adding member to group:', error);
+        }
     };
+
+    const removeMemberFromGroup = async (groupId, memberName) => {
+        try {
+            const groupToUpdate = groups.find(group => group.GroupId === groupId);
+            const updatedMembers = groupToUpdate.Members.filter(member => member !== memberName);
+            const response = await authAxios.put(`/api/groups/${groupId}`, {
+                ...groupToUpdate,
+                Members: updatedMembers
+            });
+            setGroups(prevGroups =>
+                prevGroups.map(group =>
+                    group.GroupId === groupId ? response.data.group : group
+                )
+            );
+        } catch (error) {
+            console.error('Error removing member from group:', error);
+        }
+    };
+
+
 
     const updateGroupMembers = (groupId, updatedMembers) => {
         setGroups(groups.map(group =>
@@ -89,6 +120,7 @@ const Groups = () => {
                                 group={group}
                                 deleteGroup={() => deleteGroup(group.GroupId)}
                                 addMember={(member) => addMemberToGroup(group.GroupId, member)}
+                                removeMember={(memberName) => removeMemberFromGroup(group.GroupId, memberName)}
                                 updateMembers={(updatedMembers) => updateGroupMembers(group.GroupId, updatedMembers)}
                             />
                         </Tab>

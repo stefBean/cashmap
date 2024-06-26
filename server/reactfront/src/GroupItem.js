@@ -1,18 +1,18 @@
 // src/GroupItem.js
 
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap';
+import React, {useEffect, useState} from 'react';
+import {Button, Card, Col, Container, Form, ListGroup, Row} from 'react-bootstrap';
 import './index.css'; // Custom CSS for styling
-import { Header } from './components/Header';
-import { Balance } from './components/Balance';
-import { IncomeExpenses } from './components/IncomeExpenses';
-import { TransactionList } from './components/TransactionList';
-import { AddTransaction } from './components/AddTransaction';
-import { GlobalProvider } from './context/GlobalState';
+import {Header} from './components/Header';
+import {Balance} from './components/Balance';
+import {IncomeExpenses} from './components/IncomeExpenses';
+import {TransactionList} from './components/TransactionList';
+import {AddTransaction} from './components/AddTransaction';
+import {GlobalProvider} from './context/GlobalState';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './context/ExpenseTracker.css';
 
-const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
+const GroupItem = ({ group, deleteGroup, addMember, updateMembers, removeMember }) => {
     const [newExpense, setNewExpense] = useState('');
     const [newMemberName, setNewMemberName] = useState('');
     const [joke, setJoke] = useState('');
@@ -45,10 +45,12 @@ const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
         if (newMemberName.trim() === '') {
             return;
         }
-
-        const newMember = { name: newMemberName, amountOwing: 0, amountOwed: 0 };
-        addMember(newMember);
+        addMember(newMemberName);
         setNewMemberName('');
+    };
+
+    const handleRemoveMember = (memberName) => {
+        removeMember(memberName);
     };
 
     const fetchJoke = () => {
@@ -82,8 +84,24 @@ const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
                     <Card style={{ width: '18rem' }}>
                         <ListGroup variant="flush">
                             {group.Members.map((member, index) => (
-                                <ListGroup.Item key={index}>
-                                    {member.name} - Owing: ${member.amountOwing} / Owed: ${member.amountOwed}
+                                <ListGroup.Item key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <span>{member.toString()} - Owing: ${member.amountOwing} / Owed: ${member.amountOwed}</span>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        style={{
+                                            width: '24px',
+                                            height: '24px',
+                                            padding: '0',
+                                            fontSize: '12px',
+                                            lineHeight: '24px',
+                                            textAlign: 'center',
+                                            verticalAlign: 'middle'
+                                        }}
+                                        onClick={() => handleRemoveMember(member.toString())}
+                                    >
+                                        &times;
+                                    </Button>
                                 </ListGroup.Item>
                             ))}
                         </ListGroup>

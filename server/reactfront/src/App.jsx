@@ -1,12 +1,13 @@
 // App.jsx
-import React, { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {Route, Routes} from 'react-router-dom';
 import Navigation from './Navbar';
 import Home from './Home';
 import Group from './Groups';
 import CurrencyConverter from './CurrencyConverter';
 import Login from './Login';
-import { setAuthToken } from './authAxios';
+import {setAuthToken} from './authAxios';
+import Weather from "./Weather";
 
 
 function App() {
@@ -18,18 +19,19 @@ function App() {
         }
     }, []);
 
-  return (
-    <div>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/group" element={<Group />} />
-        <Route path="/currency" element={<CurrencyConverter />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/homepage" element={<Home />}  />
-      </Routes>
-    </div>
-  );
+    return (
+        <div>
+            <Navigation/>
+            <Routes>
+                <Route path="/" element={<Login/>}/>
+                <Route path="/group" element={<Group/>}/>
+                <Route path="/currency" element={<CurrencyConverter/>}/>
+                <Route path="/login" element={<Login/>}/>
+                <Route path="/homepage" element={<Home/>}/>
+                <Route path="/weather" element={<Weather/>}/>
+            </Routes>
+        </div>
+    );
 
 }
 
