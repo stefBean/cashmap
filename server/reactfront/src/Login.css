@@ -9,11 +9,11 @@
     border: 1px solid #ffffff;
     border-radius: 30px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    background-color: rgba(70, 116, 121, 0.38);
+    background-color: rgba(75, 116, 121, 0.45);
 }
 
 .log-form h2 {
-    color: rgba(50, 120, 121, 0.79);
+    color: rgb(255, 255, 255);
     text-align: center;
     margin-bottom: 30px;
 }
@@ -21,7 +21,7 @@
 .log-form button {
     width: 100%;
     margin-top: 20px;
-    background-color: rgba(75, 116, 121, 0.45);
+    background-color: rgba(77, 118, 124, 0.91);
 }
 
 /* Media query for devices with a width of up to 600px */
