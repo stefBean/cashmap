@@ -14,7 +14,7 @@ const countGroups = () => {
 const countTransactions = () => {
     let transactionCount = 0;
     for (const group of Object.values(groupModel)) {
-        transactionCount += group.Transactions.length;
+        transactionCount += Object.keys(group.Transactions).length;
     }
     return transactionCount;
 };

@@ -232,6 +232,31 @@ router.put('/:groupId', function (req, res) {
     }
 });
 
+router.patch('/:groupId', function (req, res) {
+    const groupId = req.params.groupId;
+    const group = groupModel[groupId];
+
+    if (group && group.Members.includes(req.user.username)) {
+        // Update only the provided fields
+        if (req.body.GroupName !== undefined) {
+            group.GroupName = req.body.GroupName;
+        }
+        if (req.body.Members !== undefined) {
+            group.Members = req.body.Members;
+        }
+        if (req.body.Transactions !== undefined) {
+            group.Transactions = req.body.Transactions;
+        }
+
+        res.status(200).send({
+            message: 'Group updated successfully',
+            group: groupModel[groupId]
+        });
+    } else {
+        return res.status(404).send({ message: 'Group not found' });
+    }
+});
+
 
 /**
  * @swagger

@@ -79,13 +79,14 @@ const Groups = () => {
         try {
             const groupToUpdate = groups.find(group => group.GroupId === groupId);
             const updatedMembers = groupToUpdate.Members.filter(member => member !== memberName);
-            const response = await authAxios.put(`/api/groups/${groupId}`, {
-                ...groupToUpdate,
+
+            const response = await authAxios.patch(`/api/groups/${groupId}`, {
                 Members: updatedMembers
             });
+
             setGroups(prevGroups =>
                 prevGroups.map(group =>
-                    group.GroupId === groupId ? response.data.group : group
+                    group.GroupId === groupId ? { ...group, Members: updatedMembers } : group
                 )
             );
         } catch (error) {
