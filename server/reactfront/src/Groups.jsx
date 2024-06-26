@@ -57,11 +57,43 @@ const Groups = () => {
         }
     };
 
-    const addMemberToGroup = (groupId, member) => {
-        setGroups(groups.map(group =>
-            group.GroupId === groupId ? { ...group, Members: [...group.Members, member] } : group
-        ));
+    const addMemberToGroup = async (groupId, member) => {
+        try {
+            const groupToUpdate = groups.find(group => group.GroupId === groupId);
+            const updatedMembers = [...groupToUpdate.Members, member];
+            const response = await authAxios.put(`/api/groups/${groupId}`, {
+                ...groupToUpdate,
+                Members: updatedMembers
+            });
+            setGroups(prevGroups =>
+                prevGroups.map(group =>
+                    group.GroupId === groupId ? response.data.group : group
+                )
+            );
+        } catch (error) {
+            console.error('Error adding member to group:', error);
+        }
     };
+
+    const removeMemberFromGroup = async (groupId, memberName) => {
+        try {
+            const groupToUpdate = groups.find(group => group.GroupId === groupId);
+            const updatedMembers = groupToUpdate.Members.filter(member => member !== memberName);
+            const response = await authAxios.put(`/api/groups/${groupId}`, {
+                ...groupToUpdate,
+                Members: updatedMembers
+            });
+            setGroups(prevGroups =>
+                prevGroups.map(group =>
+                    group.GroupId === groupId ? response.data.group : group
+                )
+            );
+        } catch (error) {
+            console.error('Error removing member from group:', error);
+        }
+    };
+
+
 
     const updateGroupMembers = (groupId, updatedMembers) => {
         setGroups(groups.map(group =>
@@ -88,6 +120,7 @@ const Groups = () => {
                                 group={group}
                                 deleteGroup={() => deleteGroup(group.GroupId)}
                                 addMember={(member) => addMemberToGroup(group.GroupId, member)}
+                                removeMember={(memberName) => removeMemberFromGroup(group.GroupId, memberName)}
                                 updateMembers={(updatedMembers) => updateGroupMembers(group.GroupId, updatedMembers)}
                             />
                         </Tab>

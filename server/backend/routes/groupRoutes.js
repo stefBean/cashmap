@@ -107,74 +107,131 @@ router.post('/', function (req, res) {
 
 /**
  * @swagger
- * /api/groups:
- *   get:
- *     summary: Get all groups for a user
+ * /api/groups/{groupId}:
+ *   put:
+ *     summary: Update a group
  *     tags: [Groups]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: groupId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the group
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               GroupId:
+ *                 type: string
+ *               GroupName:
+ *                 type: string
+ *               Members:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     amountOwing:
+ *                       type: number
+ *                     amountOwed:
+ *                       type: number
+ *               Transactions:
+ *                 type: object
+ *                 additionalProperties:
+ *                   type: object
+ *                   properties:
+ *                     Description:
+ *                       type: string
+ *                     TransactionId:
+ *                       type: string
+ *                     Amount:
+ *                       type: number
+ *                     Sender:
+ *                       type: string
+ *                     Receiver:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                     Type:
+ *                       type: string
  *     responses:
  *       200:
- *         description: A list of user groups
+ *         description: Group updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               type: object
- *               additionalProperties:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     example: 1
- *                   name:
- *                     type: string
- *                     example: "Group Name"
- *                   Members:
- *                     type: array
- *                     items:
- *                       type: string
- *                       example: "username"
- *           application/xml:
- *             schema:
- *               type: object
  *               properties:
- *                 groups:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       id:
- *                         type: integer
- *                         example: 1
- *                       name:
- *                         type: string
- *                         example: "Group Name"
- *                       Members:
- *                         type: array
- *                         items:
- *                           type: string
- *                           example: "username"
+ *                 message:
+ *                   type: string
+ *                   example: Group updated successfully
+ *                 group:
+ *                   type: object
+ *                   properties:
+ *                     GroupId:
+ *                       type: string
+ *                     GroupName:
+ *                       type: string
+ *                     Members:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           name:
+ *                             type: string
+ *                           amountOwing:
+ *                             type: number
+ *                           amountOwed:
+ *                             type: number
+ *                     Transactions:
+ *                       type: object
+ *                       additionalProperties:
+ *                         type: object
+ *                         properties:
+ *                           Description:
+ *                             type: string
+ *                           TransactionId:
+ *                             type: string
+ *                           Amount:
+ *                             type: number
+ *                           Sender:
+ *                             type: string
+ *                           Receiver:
+ *                             type: array
+ *                             items:
+ *                               type: string
+ *                           Type:
+ *                             type: string
  */
-router.patch('/:groupId', function (req, res) {
+router.put('/:groupId', function (req, res) {
     const groupId = req.params.groupId;
     const group = groupModel[groupId];
 
     if (group && group.Members.includes(req.user.username)) {
-        if (req.body.GroupName !== undefined) {
-            group.GroupName = req.body.GroupName;
-        }
-        if (req.body.Members !== undefined) {
-            group.Members = req.body.Members;
-        }
+        // Replace the entire group resource
+        groupModel[groupId] = {
+            GroupId: groupId,
+            GroupName: req.body.GroupName,
+            Members: req.body.Members,
+            Transactions: req.body.Transactions
+        };
 
         res.status(200).send({
             message: 'Group updated successfully',
-            group: group
+            group: groupModel[groupId]
         });
     } else {
-        return res.status(404).send({message: 'Group not found'});
+        return res.status(404).send({ message: 'Group not found' });
     }
 });
+
 
 /**
  * @swagger
