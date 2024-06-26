@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import authAxios from './authAxios';
+import './index.css';
+import Card from 'react-bootstrap/Card';
 
 const CurrencyConverter = () => {
     const [amount, setAmount] = useState('');
@@ -19,9 +21,15 @@ const CurrencyConverter = () => {
 
     return (
         <Container>
+            <Row>
+                <Col className="text-center">
+                    <h1 className="headline">Currency Converter</h1>
+                </Col>
+            </Row>
             <Row className="justify-content-md-center mt-5">
-                <Col md={6}>
-                    <h2>Currency Converter</h2>
+                <Col md={12} className='whiteBackground'>
+                <Card> 
+                    <Card.Body> 
                     <Form>
                         <Form.Group>
                             <Form.Label>Amount</Form.Label>
@@ -67,6 +75,8 @@ const CurrencyConverter = () => {
                             Converted Amount: {convertedAmount} {toCurrency}
                         </p>
                     )}
+                    </Card.Body> 
+                    </Card> 
                 </Col>
             </Row>
         </Container>

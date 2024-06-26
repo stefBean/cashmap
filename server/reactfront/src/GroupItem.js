@@ -1,22 +1,25 @@
-// src/Groups.js
-import React, {useState} from 'react';
+// src/GroupItem.js
+
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, ListGroup, Form, Button } from 'react-bootstrap';
 import './index.css'; // Custom CSS for styling
-import {Header} from './components/Header'
-import{Balance} from './components/Balance'
-import {IncomeExpenses} from './components/IncomeExpenses'
-import {TransactionList} from './components/TransactionList'
-import{AddTransaction} from './components/AddTransaction'
-import{GlobalProvider} from './context/GlobalState'
+import { Header } from './components/Header';
+import { Balance } from './components/Balance';
+import { IncomeExpenses } from './components/IncomeExpenses';
+import { TransactionList } from './components/TransactionList';
+import { AddTransaction } from './components/AddTransaction';
+import { GlobalProvider } from './context/GlobalState';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './context/ExpenseTracker.css';
 
-const GroupItem = ({ group, deleteGroup, addMember }) => {
-    const [expenses, setExpenses] = useState([]);
+const GroupItem = ({ group, deleteGroup, addMember, updateMembers }) => {
     const [newExpense, setNewExpense] = useState('');
-    const [lastExpenses, setLastExpenses] = useState([]);
     const [newMemberName, setNewMemberName] = useState('');
     const [joke, setJoke] = useState('');
+
+    useEffect(() => {
+        // Fetch initial data or perform other side effects here
+    }, []); // Empty dependency array means this effect runs only once, like componentDidMount
 
     const addExpense = () => {
         if (newExpense.trim() === '') {
@@ -29,28 +32,24 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
             type: 'spend' // Assuming all added expenses are spends for now
         };
 
-        setExpenses([expense, ...expenses.slice(0, 4)]); // Add new expense to expenses list
-        setLastExpenses([newExpense, ...lastExpenses.slice(0, 4)]); // Add new expense description to lastExpenses list
-        setNewExpense(''); // Clear input field
-
-        // Update people's amounts (demo: randomly assign amounts owed)
-        const updatedMembers = group.members.map(member => ({
+        const updatedMembers = group.Members.map(member => ({
             ...member,
             amountOwing: member.amountOwing + Math.floor(Math.random() * 10),
             amountOwed: member.amountOwed + Math.floor(Math.random() * 10)
         }));
-        addMember(group.key, updatedMembers);
+        updateMembers(group.GroupId, updatedMembers);
+        setNewExpense('');
     };
 
     const handleAddMember = () => {
-        if(newMemberName.trim() === '') {
+        if (newMemberName.trim() === '') {
             return;
         }
 
         const newMember = { name: newMemberName, amountOwing: 0, amountOwed: 0 };
         addMember(newMember);
         setNewMemberName('');
-    }
+    };
 
     const fetchJoke = () => {
         fetch('https://api.allorigins.win/get?url=https://www.yomama-jokes.com/api/v1/jokes/random/')
@@ -82,7 +81,7 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
                     <h3>Group Members</h3>
                     <Card style={{ width: '18rem' }}>
                         <ListGroup variant="flush">
-                            {group.members.map((member, index) => (
+                            {group.Members.map((member, index) => (
                                 <ListGroup.Item key={index}>
                                     {member.name} - Owing: ${member.amountOwing} / Owed: ${member.amountOwed}
                                 </ListGroup.Item>
@@ -124,6 +123,5 @@ const GroupItem = ({ group, deleteGroup, addMember }) => {
         </Container>
     );
 };
-
 
 export default GroupItem;
